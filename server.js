@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const sqlite3 = require('sqlite3').verbose();
+const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,48 +13,33 @@ app.use(express.json());
 // Serve the static frontend files from the current directory
 app.use(express.static(path.join(__dirname, '')));
 
-// Initialize SQLite DB
-const dbFile = path.join(__dirname, 'scores.db');
-const db = new sqlite3.Database(dbFile, (err) => {
-    if (err) {
-        console.error('Error connecting to SQLite database:', err.message);
-    } else {
-        console.log('Connected to the SQLite database.');
-        // Create table if not exists
-        db.run(`
-            CREATE TABLE IF NOT EXISTS leaderboard (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                player_name TEXT NOT NULL,
-                score INTEGER NOT NULL,
-                badge TEXT NOT NULL,
-                city_count INTEGER NOT NULL,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-    }
-});
+// Initialize Supabase
+const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL';
+const supabaseKey = process.env.SUPABASE_KEY || 'YOUR_SUPABASE_KEY';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 // API Routes
 
 // GET /api/leaderboard - Get top 50 scores
-app.get('/api/leaderboard', (req, res) => {
-    const query = `
-        SELECT id, player_name, score, badge, city_count, timestamp
-        FROM leaderboard
-        ORDER BY score DESC, timestamp ASC
-        LIMIT 50
-    `;
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.json({ data: rows });
-    });
+app.get('/api/leaderboard', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('leaderboard')
+            .select('id, player_name, score, badge, city_count, timestamp')
+            .order('score', { ascending: false })
+            .order('timestamp', { ascending: true })
+            .limit(50);
+            
+        if (error) throw error;
+        
+        res.json({ data: data });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // POST /api/scores - Submit a new score
-app.post('/api/scores', (req, res) => {
+app.post('/api/scores', async (req, res) => {
     const { player_name, score, badge, city_count } = req.body;
     
     if (!player_name || score == null || !badge || !city_count) {
@@ -61,17 +47,24 @@ app.post('/api/scores', (req, res) => {
         return;
     }
 
-    const query = `
-        INSERT INTO leaderboard (player_name, score, badge, city_count)
-        VALUES (?, ?, ?, ?)
-    `;
-    db.run(query, [player_name.trim().substring(0, 30), score, badge, city_count], function(err) {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.status(201).json({ id: this.lastID, message: 'Score saved successfully.' });
-    });
+    try {
+        const { data, error } = await supabase
+            .from('leaderboard')
+            .insert([
+                { 
+                    player_name: player_name.trim().substring(0, 30), 
+                    score: score, 
+                    badge: badge, 
+                    city_count: city_count 
+                }
+            ]);
+            
+        if (error) throw error;
+        
+        res.status(201).json({ message: 'Score saved successfully.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Start Server
