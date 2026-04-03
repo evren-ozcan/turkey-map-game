@@ -24,8 +24,10 @@ app.use(express.static(path.join(__dirname, '')));
 // Initialize Supabase
 const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL';
 const supabaseKey = process.env.SUPABASE_KEY || 'YOUR_SUPABASE_KEY';
+globalThis.Headers = fetch.Headers; // Required for Node 14
+
 const supabase = createClient(supabaseUrl, supabaseKey, {
-    global: { fetch: fetch }
+    global: { fetch: fetch, headers: fetch.Headers }
 });
 
 // API Routes
