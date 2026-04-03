@@ -22,7 +22,8 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '')));
 
 // Initialize Supabase
-const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL';
+// (Fallback link added just to prevent crash if environment variables are not loaded, API calls will still error normally)
+const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY || 'YOUR_SUPABASE_KEY';
 globalThis.Headers = fetch.Headers; // Required for Node 14
 
