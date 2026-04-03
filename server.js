@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
+const fetch = require('cross-fetch');
 const path = require('path');
 const leoProfanity = require('leo-profanity');
 require('dotenv').config();
@@ -23,7 +24,9 @@ app.use(express.static(path.join(__dirname, '')));
 // Initialize Supabase
 const supabaseUrl = process.env.SUPABASE_URL || 'YOUR_SUPABASE_URL';
 const supabaseKey = process.env.SUPABASE_KEY || 'YOUR_SUPABASE_KEY';
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseKey, {
+    global: { fetch: fetch }
+});
 
 // API Routes
 
