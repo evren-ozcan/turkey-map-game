@@ -33,15 +33,31 @@ let state = {
     targetCount: 81
 };
 
-// Start Game
-startBtn.addEventListener('click', () => {
+// Start Game Logic
+function startGame(keepCities = false) {
     if (state.status === 'PLAYING') return;
     
     state.score = 0;
     state.maxPossibleScore = 0;
-    state.askedCities = [];
-    state.targetCount = parseInt(countSelect.value);
-    progressEl.textContent = `1 / ${state.targetCount}`;
+    
+    if (!keepCities) {
+        state.askedCities = [];
+        provinces.forEach(p => p.classList.remove('passive'));
+    }
+    
+    let requestedCount = parseInt(countSelect.value);
+    const remainingCount = cities.length - state.askedCities.length;
+    
+    if (remainingCount === 0 && keepCities) {
+        alert("Tüm şehirleri zaten buldun! Harita baştan başlıyor.");
+        state.askedCities = [];
+        provinces.forEach(p => p.classList.remove('passive'));
+        state.targetCount = requestedCount;
+    } else {
+        state.targetCount = state.askedCities.length + Math.min(requestedCount, remainingCount);
+    }
+    
+    progressEl.textContent = `${state.askedCities.length + 1} / ${state.targetCount}`;
     scoreEl.textContent = state.score;
     
     // Hide controls totally for immense focus
@@ -49,9 +65,12 @@ startBtn.addEventListener('click', () => {
     timerEl.style.display = 'inline-block';
     
     state.status = 'PLAYING';
-    
     nextQuestion();
-});
+}
+
+startBtn.addEventListener('click', () => startGame(false));
+document.getElementById('restart-full-btn').addEventListener('click', () => startGame(false));
+document.getElementById('continue-game-btn').addEventListener('click', () => startGame(true));
 
 function nextQuestion() {
     clearTimeout(state.timerInterval);
@@ -252,7 +271,8 @@ function endGame(message) {
     questionEl.textContent = `Toplam Puan: ${state.score}`;
     feedbackEl.textContent = message;
     feedbackEl.style.color = "#38bdf8";
-    startBtn.textContent = "Tekrar Oyna";
+    startBtn.style.display = 'none';
+    document.getElementById('endgame-actions').style.display = 'flex';
     document.querySelector('.controls').style.display = 'flex';
     timerEl.style.display = 'none';
     
