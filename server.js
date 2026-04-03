@@ -5,8 +5,11 @@ const path = require('path');
 const leoProfanity = require('leo-profanity');
 require('dotenv').config();
 
-// Load Turkish swear words dictionary
-leoProfanity.loadDictionary('tr');
+// Load English and Turkish swear words, and add some missing common TR bad words
+const trDict = leoProfanity.getDictionary('tr');
+const enDict = leoProfanity.getDictionary('en');
+const customTR = ['göt', 'amk', 'aq', 'amq', 'oç', 'sik', 'siktir', 'yarak', 'yarrak', 'amcık', 'piç', 'ibne', 'orospu', 'döl', 'pezevenk', 'fahişe', 'gavat', 'kahpe', 'am', 'sokam', 'sokarım', 'meme', 'yavşak'];
+leoProfanity.add(trDict).add(enDict).add(customTR);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
