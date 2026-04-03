@@ -332,8 +332,9 @@ document.getElementById('submit-score-btn').addEventListener('click', async () =
             recapModal.classList.add('hidden');
             fetchLeaderboard();
         } else {
-            console.error("Error saving score");
-            alert("Skor kaydedilirken bir hata oluştu.");
+            const errData = await response.json();
+            console.error("Error saving score:", errData);
+            alert(errData.error || "Skor kaydedilirken bir hata oluştu.");
         }
     } catch (e) {
         console.error("Network error:", e);

@@ -2,7 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
+const leoProfanity = require('leo-profanity');
 require('dotenv').config();
+
+// Load Turkish swear words dictionary
+leoProfanity.loadDictionary('tr');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -44,6 +48,11 @@ app.post('/api/scores', async (req, res) => {
     
     if (!player_name || score == null || !badge || !city_count) {
         res.status(400).json({ error: 'Missing required fields' });
+        return;
+    }
+
+    if (leoProfanity.check(player_name)) {
+        res.status(400).json({ error: 'Uygunsuz bir kullanıcı adı girdiniz. Lütfen geçerli bir isim kullanın.' });
         return;
     }
 
