@@ -155,7 +155,7 @@ app.post('/api/scores', async (req, res) => {
 
     // Insert the score record
     try {
-        const { error } = await supabase
+        const { data: inserted, error } = await supabase
             .from('leaderboard')
             .insert([{
                 player_name: finalName,
@@ -166,12 +166,14 @@ app.post('/api/scores', async (req, res) => {
                 ip_address: rawIp,
                 user_agent: rawUa,
                 is_custom_name: isCustom
-            }]);
+            }])
+            .select('id');
 
         if (error) throw error;
 
         res.status(201).json({
             message: 'Score saved successfully.',
+            score_id: inserted?.[0]?.id || null,
             player_token: finalToken,
             assigned_name: finalName,
             is_custom_name: isCustom
@@ -205,6 +207,24 @@ app.patch('/api/players/:token', async (req, res) => {
         if (error) throw error;
 
         res.json({ message: 'Name updated successfully.', player_name: finalName });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// PATCH /api/scores/:id/share - Mark a score row as shared
+app.patch('/api/scores/:id/share', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const { error } = await supabase
+            .from('leaderboard')
+            .update({ shared: true })
+            .eq('id', id);
+
+        if (error) throw error;
+
+        res.json({ message: 'Marked as shared.' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

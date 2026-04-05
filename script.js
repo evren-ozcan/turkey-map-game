@@ -33,7 +33,8 @@ let state = {
     targetCount: 81,
     playerToken: localStorage.getItem('playerToken') || null,
     assignedName: null,
-    scoreSubmitted: false
+    scoreSubmitted: false,
+    currentScoreId: null
 };
 
 // Start Game Logic
@@ -326,6 +327,7 @@ async function autoSubmitScore(badge) {
             const data = await response.json();
             state.playerToken = data.player_token;
             state.assignedName = data.assigned_name;
+            state.currentScoreId = data.score_id;
             localStorage.setItem('playerToken', data.player_token);
             
             // Show the assigned name in recap modal
@@ -396,7 +398,13 @@ document.getElementById('update-name-btn').addEventListener('click', async () =>
 
 document.getElementById('share-btn').addEventListener('click', () => {
     const badge = calculateBadge(state.score, state.targetCount);
-    const text = `Türkiye Haritası Oyununda ${state.score} puanla '${badge}' unvanını kazandım! Sen haritayı ne kadar iyi biliyorsun?`;
+    const text = `Türkiye Haritası Oyununda ${state.score} puanla '${badge}' unvanını kazandım! Sen haritası ne kadar iyi biliyorsun?`;
+    
+    // Mark this score row as shared
+    if (state.currentScoreId) {
+        fetch(`/api/scores/${state.currentScoreId}/share`, { method: 'PATCH' })
+            .catch(e => console.error('Share mark error:', e));
+    }
     
     if (navigator.share) {
         navigator.share({
