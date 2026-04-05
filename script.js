@@ -334,6 +334,8 @@ document.getElementById('submit-score-btn').addEventListener('click', async () =
         } else {
             const errData = await response.json();
             console.error("Error saving score:", errData);
+            // Close leaderboard if open so the error toast is visible
+            leaderboardModal.classList.add('hidden');
             showToast(errData.error || "Skor kaydedilirken bir hata oluştu.", "error");
         }
     } catch (e) {
