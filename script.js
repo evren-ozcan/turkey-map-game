@@ -398,7 +398,7 @@ document.getElementById('update-name-btn').addEventListener('click', async () =>
 
 document.getElementById('share-btn').addEventListener('click', () => {
     const badge = calculateBadge(state.score, state.targetCount);
-    const text = `Türkiye Haritası Oyununda ${state.score} puanla '${badge}' unvanını kazandım! Sen haritası ne kadar iyi biliyorsun?`;
+    const text = `Türkiye Haritası Oyununda ${state.score} puanla '${badge}' unvanını kazandım! Sen haritayı ne kadar iyi biliyorsun?`;
     
     // Mark this score row as shared
     if (state.currentScoreId) {
