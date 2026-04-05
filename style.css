@@ -8,6 +8,7 @@
 body {
     background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
     min-height: 100vh;
+    min-height: 100dvh;
     color: white;
     display: flex;
     flex-direction: column;
@@ -443,12 +444,75 @@ svg {
     50% { opacity: 0.5; }
 }
 
-/* Responsive */
+/* Responsive - Tablet */
 @media (max-width: 900px) {
-    .hud-top { padding: 10px 15px; }
-    .title-text { font-size: 2.6rem !important; }
-    .large-timer { font-size: 2.8rem; }
+    .hud-top { padding: 8px 15px; }
+    .title-text { font-size: 2.4rem !important; }
+    .large-timer { font-size: 2.4rem; }
     svg { transform: scale(1.1); }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    #wrapper {
+        gap: 4px;
+        padding: 6px 0;
+        justify-content: flex-start;
+        padding-bottom: env(safe-area-inset-bottom, 12px);
+    }
+
+    .hud-top {
+        padding: 6px 12px;
+        margin-top: 0;
+    }
+
+    .hud-center {
+        margin-top: -10px;
+    }
+
+    .title-text { font-size: 2rem !important; }
+    .large-timer { font-size: 2rem; }
+
+    .map-container {
+        flex: none;
+        height: 38vh;
+        min-height: unset;
+        padding: 4px;
+    }
+
+    svg {
+        max-height: 38vh;
+    }
+
+    .controls {
+        gap: 6px;
+        margin: 0 auto 4px auto;
+        padding: 0 12px;
+        padding-bottom: env(safe-area-inset-bottom, 8px);
+    }
+
+    .glass-select.modern-dropdown {
+        padding: 9px 10px;
+        font-size: 0.85rem;
+    }
+
+    .primary-btn.game-btn {
+        padding: 11px;
+        font-size: 1rem;
+    }
+
+    .secondary-btn.leader-btn {
+        padding: 9px;
+        font-size: 0.88rem;
+    }
+
+    .stat-pill {
+        padding: 4px 10px;
+    }
+
+    .stat-pill .value {
+        font-size: 1rem;
+    }
 }
 
 /* Modals */
