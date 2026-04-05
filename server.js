@@ -24,10 +24,6 @@ function generateRandomName() {
     return `${adj}${noun}${num}`;
 }
 
-function hashString(str) {
-    return crypto.createHash('sha256').update(str || '').digest('hex').substring(0, 16);
-}
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -74,11 +70,9 @@ app.post('/api/scores', async (req, res) => {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Hash IP + User-Agent for fingerprinting (no raw data stored)
-    const rawIp = req.headers['x-forwarded-for']?.split(',')[0] || req.ip || '';
-    const rawUa = (req.headers['user-agent'] || '').substring(0, 300);
-    const ipHash = hashString(rawIp);
-    const uaHash = hashString(rawUa);
+    // Store raw IP and full user agent
+    const rawIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip || '';
+    const rawUa = req.headers['user-agent'] || '';
 
     let finalName = null;
     let finalToken = player_token || null;
@@ -119,33 +113,33 @@ app.post('/api/scores', async (req, res) => {
 
         // 2. Check IP+UA for a custom name
         if (!finalName) {
-            const { data: byHash } = await supabase
+            const { data: byIpUa } = await supabase
                 .from('leaderboard')
                 .select('player_name, player_token, is_custom_name')
-                .eq('ip_hash', ipHash)
-                .eq('ua_hash', uaHash)
+                .eq('ip_address', rawIp)
+                .eq('user_agent', rawUa)
                 .eq('is_custom_name', true)
                 .limit(1);
 
-            if (byHash && byHash.length > 0) {
-                finalName = byHash[0].player_name;
-                finalToken = finalToken || byHash[0].player_token;
+            if (byIpUa && byIpUa.length > 0) {
+                finalName = byIpUa[0].player_name;
+                finalToken = finalToken || byIpUa[0].player_token;
                 isCustom = true;
             }
         }
 
         // 3. Check IP+UA for any existing name (even random)
         if (!finalName) {
-            const { data: byHashAny } = await supabase
+            const { data: byIpUaAny } = await supabase
                 .from('leaderboard')
                 .select('player_name, player_token')
-                .eq('ip_hash', ipHash)
-                .eq('ua_hash', uaHash)
+                .eq('ip_address', rawIp)
+                .eq('user_agent', rawUa)
                 .limit(1);
 
-            if (byHashAny && byHashAny.length > 0) {
-                finalName = byHashAny[0].player_name;
-                finalToken = finalToken || byHashAny[0].player_token;
+            if (byIpUaAny && byIpUaAny.length > 0) {
+                finalName = byIpUaAny[0].player_name;
+                finalToken = finalToken || byIpUaAny[0].player_token;
             }
         }
 
@@ -169,8 +163,8 @@ app.post('/api/scores', async (req, res) => {
                 badge: badge,
                 city_count: city_count,
                 player_token: finalToken,
-                ip_hash: ipHash,
-                ua_hash: uaHash,
+                ip_address: rawIp,
+                user_agent: rawUa,
                 is_custom_name: isCustom
             }]);
 
