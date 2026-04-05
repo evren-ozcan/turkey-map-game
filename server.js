@@ -41,7 +41,7 @@ app.get('/api/leaderboard', async (req, res) => {
             .select('id, player_name, score, badge, city_count, timestamp')
             .order('score', { ascending: false })
             .order('timestamp', { ascending: true })
-            .limit(50);
+            .limit(10);
             
         if (error) throw error;
         

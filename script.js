@@ -49,7 +49,7 @@ function startGame(keepCities = false) {
     const remainingCount = cities.length - state.askedCities.length;
     
     if (remainingCount === 0 && keepCities) {
-        alert("Tüm şehirleri zaten buldun! Harita baştan başlıyor.");
+        showToast("Tüm şehirleri zaten buldun! Harita baştan başlıyor.", "success");
         state.askedCities = [];
         provinces.forEach(p => p.classList.remove('passive'));
         state.targetCount = requestedCount;
@@ -310,7 +310,7 @@ document.getElementById('close-leaderboard-btn').addEventListener('click', () =>
 document.getElementById('submit-score-btn').addEventListener('click', async () => {
     const name = playerNameInput.value.trim();
     if (!name) {
-        alert("Lütfen bir isim girin.");
+        showToast("Lütfen bir isim girin.", "error");
         return;
     }
     
@@ -328,17 +328,17 @@ document.getElementById('submit-score-btn').addEventListener('click', async () =
         });
         
         if (response.ok) {
-            alert("Skorunuz kaydedildi!");
+            showToast("Skorunuz kaydedildi!", "success");
             recapModal.classList.add('hidden');
             fetchLeaderboard();
         } else {
             const errData = await response.json();
             console.error("Error saving score:", errData);
-            alert(errData.error || "Skor kaydedilirken bir hata oluştu.");
+            showToast(errData.error || "Skor kaydedilirken bir hata oluştu.", "error");
         }
     } catch (e) {
         console.error("Network error:", e);
-        alert("Bağlantı hatası. Sunucu çalışıyor mu?");
+        showToast("Bağlantı hatası. Sunucu çalışıyor mu?", "error");
     }
 });
 
@@ -354,7 +354,7 @@ document.getElementById('share-btn').addEventListener('click', () => {
         }).catch(console.error);
     } else {
         navigator.clipboard.writeText(text + " " + window.location.href);
-        alert("Sonuç metni panoya kopyalandı! İstediğiniz yerde (WhatsApp, Twitter vb.) yapıştırarak paylaşabilirsiniz.");
+        showToast("Sonuç panoya kopyalandı! İstediğin yerde paylaşabilirsin.", "success");
     }
 });
 
@@ -378,7 +378,7 @@ async function fetchLeaderboard() {
         leaderboardModal.classList.remove('hidden');
     } catch (e) {
         console.error("Error fetching leaderboard:", e);
-        alert("Liderlik tablosu yüklenemedi. Sunucu çalışıyor mu?");
+        showToast("Liderlik tablosu yüklenemedi. İnternet bağlantınızı kontrol edin.", "error");
     }
 }
 
@@ -392,5 +392,21 @@ function escapeHTML(str) {
             '"': '&quot;'
         }[tag])
     );
+}
+
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }
 
