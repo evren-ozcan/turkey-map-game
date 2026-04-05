@@ -30,7 +30,10 @@ let state = {
     attempts: 1,
     timerInterval: null,
     askedCities: [],
-    targetCount: 81
+    targetCount: 81,
+    playerToken: localStorage.getItem('playerToken') || null,
+    assignedName: null,
+    scoreSubmitted: false
 };
 
 // Start Game Logic
@@ -265,6 +268,7 @@ provinces.forEach(p => {
 
 function endGame(message) {
     state.status = 'GAMEOVER';
+    state.scoreSubmitted = false;
     clearInterval(state.timerInterval);
     progressEl.textContent = `${state.targetCount} / ${state.targetCount}`;
     questionLabelEl.textContent = "Oyun Bitti";
@@ -276,11 +280,14 @@ function endGame(message) {
     document.querySelector('.controls').style.display = 'flex';
     timerEl.style.display = 'none';
     
-    // Show recap modal
+    // Show recap modal immediately
     const badge = calculateBadge(state.score, state.targetCount);
     recapScoreEl.textContent = state.score;
     recapBadgeEl.textContent = badge;
     recapModal.classList.remove('hidden');
+    
+    // Auto-submit score in background
+    autoSubmitScore(badge);
 }
 
 // --- Phase 2: Badges, Leaderboard, Share ---
@@ -295,6 +302,46 @@ function calculateBadge(score, targetCount) {
     return "Ev Kuşu 🏠";
 }
 
+// Auto-submit score silently when game ends
+async function autoSubmitScore(badge) {
+    if (state.scoreSubmitted) return;
+    state.scoreSubmitted = true;
+    
+    const assignedNameEl = document.getElementById('recap-assigned-name');
+    const playerNameInput = document.getElementById('player-name');
+    
+    try {
+        const response = await fetch('/api/scores', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                score: state.score,
+                badge: badge,
+                city_count: state.targetCount,
+                player_token: state.playerToken
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            state.playerToken = data.player_token;
+            state.assignedName = data.assigned_name;
+            localStorage.setItem('playerToken', data.player_token);
+            
+            // Show the assigned name in recap modal
+            if (assignedNameEl) assignedNameEl.textContent = data.assigned_name;
+            if (playerNameInput) {
+                playerNameInput.value = '';
+                playerNameInput.placeholder = data.is_custom_name 
+                    ? data.assigned_name 
+                    : `${data.assigned_name} — değiştirmek için yaz`;
+            }
+        }
+    } catch (e) {
+        console.error("Auto-submit error:", e);
+    }
+}
+
 document.getElementById('close-recap-btn').addEventListener('click', () => {
     recapModal.classList.add('hidden');
 });
@@ -307,40 +354,43 @@ document.getElementById('close-leaderboard-btn').addEventListener('click', () =>
     leaderboardModal.classList.add('hidden');
 });
 
-document.getElementById('submit-score-btn').addEventListener('click', async () => {
-    const name = playerNameInput.value.trim();
+// Update player name (optional, user-initiated)
+document.getElementById('update-name-btn').addEventListener('click', async () => {
+    const name = document.getElementById('player-name').value.trim();
     if (!name) {
         showToast("Lütfen bir isim girin.", "error");
         return;
     }
+    if (!state.playerToken) {
+        showToast("Oyun verisi bulunamadı.", "error");
+        return;
+    }
     
-    const badge = calculateBadge(state.score, state.targetCount);
     try {
-        const response = await fetch('/api/scores', {
-            method: 'POST',
+        const response = await fetch(`/api/players/${state.playerToken}`, {
+            method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                player_name: name,
-                score: state.score,
-                badge: badge,
-                city_count: state.targetCount
-            })
+            body: JSON.stringify({ player_name: name })
         });
         
         if (response.ok) {
-            showToast("Skorunuz kaydedildi!", "success");
-            recapModal.classList.add('hidden');
+            const data = await response.json();
+            state.assignedName = data.player_name;
+            const assignedNameEl = document.getElementById('recap-assigned-name');
+            if (assignedNameEl) assignedNameEl.textContent = data.player_name;
+            document.getElementById('player-name').value = '';
+            document.getElementById('player-name').placeholder = data.player_name;
+            leaderboardModal.classList.add('hidden');
+            showToast(`İsmin "${data.player_name}" olarak güncellendi! 🎉`, "success");
             fetchLeaderboard();
         } else {
             const errData = await response.json();
-            console.error("Error saving score:", errData);
-            // Close leaderboard if open so the error toast is visible
             leaderboardModal.classList.add('hidden');
-            showToast(errData.error || "Skor kaydedilirken bir hata oluştu.", "error");
+            showToast(errData.error || "İsim güncellenirken hata oluştu.", "error");
         }
     } catch (e) {
-        console.error("Network error:", e);
-        showToast("Bağlantı hatası. Sunucu çalışıyor mu?", "error");
+        console.error("Name update error:", e);
+        showToast("Bağlantı hatası.", "error");
     }
 });
 

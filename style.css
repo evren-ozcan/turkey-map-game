@@ -550,16 +550,45 @@ svg {
 .recap-stats {
     background: rgba(0,0,0,0.2);
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 10px;
+    padding: 16px;
+    margin-bottom: 8px;
 }
 .recap-stats p { margin: 5px 0; font-size: 1.2rem; }
 .recap-stats strong { font-size: 1.5rem; }
 
+.recap-player-info {
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+    margin-bottom: 4px;
+}
+.recap-player-info p { margin: 3px 0; font-size: 1rem; }
+.recap-hint {
+    font-size: 0.8rem !important;
+    opacity: 0.6;
+}
+
+.recap-name-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.recap-name-row .glass-input {
+    flex: 1;
+    margin-bottom: 0;
+}
+.recap-name-row .primary-btn {
+    white-space: nowrap;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+}
+
 .recap-actions {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .table-container {
