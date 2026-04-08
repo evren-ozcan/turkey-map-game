@@ -537,6 +537,8 @@ svg {
 .modal-content {
     width: 90%;
     max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -670,24 +672,18 @@ svg {
 }
 
 /* Responsive - Mobile Landscape (Telefonu Yan Çevirme) */
-@media (max-height: 500px) and (orientation: landscape) {
-    body {
-        overflow: hidden;
-    }
-    
+@media (max-height: 600px) and (orientation: landscape) {
     #wrapper {
         display: grid;
-        grid-template-columns: 220px 1fr;
+        grid-template-columns: 165px 1fr;
         grid-template-rows: min-content min-content 1fr;
         grid-template-areas: 
             "top map"
             "center map"
             "controls map";
-        gap: 5px;
-        padding: 5px 15px;
-        height: 100vh;
-        height: 100dvh;
-        max-height: 100dvh;
+        gap: 2px;
+        padding: 4px 8px;
+        min-height: 100vh;
         align-items: center;
         justify-content: flex-start;
     }
@@ -696,11 +692,16 @@ svg {
         grid-area: top;
         padding: 0;
         margin: 0;
+        flex-direction: row;
+        gap: 4px;
     }
+    .stat-pill { padding: 2px 6px; gap: 4px; }
+    .stat-pill .label { font-size: 0.6rem; }
+    .stat-pill .value { font-size: 0.95rem; }
     
     .hud-center {
         grid-area: center;
-        margin: 5px 0;
+        margin: 0;
         padding: 0;
     }
     
@@ -708,34 +709,48 @@ svg {
         grid-area: controls;
         margin: 0;
         padding: 0;
-        padding-bottom: env(safe-area-inset-bottom, 5px);
+        padding-bottom: env(safe-area-inset-bottom, 2px);
+        gap: 4px;
     }
     
     .dropdowns-row {
         flex-direction: column;
-        gap: 5px;
+        gap: 4px;
     }
     
     .map-container {
         grid-area: map;
-        height: 100dvh;
-        max-height: 100dvh;
-        padding: 10px;
+        height: 100%;
+        min-height: 90vh;
+        padding: 2px;
         margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     svg {
-        height: 100%;
-        max-height: 95dvh;
+        height: auto;
+        max-height: 96vh;
         transform: scale(1);
     }
     
-    .title-text { font-size: 1.4rem !important; margin-bottom: 2px !important; }
-    .large-timer { font-size: 1.6rem; margin-bottom: 2px; }
-    .subtitle-text { font-size: 0.75rem !important; margin-bottom: 0 !important; }
-    .feedback-text { font-size: 0.85rem; height: 1rem; margin-top: 4px; }
+    .title-text { font-size: 1.15rem !important; margin-bottom: 2px !important; line-height: 1.1; }
+    .large-timer { font-size: 1.35rem; margin-bottom: 2px; }
+    .subtitle-text { font-size: 0.65rem !important; margin-bottom: 0 !important; }
+    .feedback-text { font-size: 0.75rem; height: auto; min-height: 1rem; margin-top: 2px; line-height: 1.1; }
     
-    .primary-btn.game-btn { font-size: 0.85rem; padding: 8px; }
-    .secondary-btn.leader-btn { font-size: 0.8rem; padding: 6px; }
-    .glass-select.modern-dropdown { padding: 6px 8px; font-size: 0.8rem; }
+    .primary-btn.game-btn { font-size: 0.75rem; padding: 6px; }
+    .secondary-btn.leader-btn { font-size: 0.75rem; padding: 5px; }
+    .glass-select.modern-dropdown { padding: 4px 6px; font-size: 0.75rem; }
+
+    #endgame-actions {
+        flex-direction: column;
+        gap: 4px !important;
+    }
+    #restart-full-btn, #continue-game-btn {
+        width: 100% !important;
+        font-size: 0.75rem !important;
+        padding: 6px !important;
+    }
 }
