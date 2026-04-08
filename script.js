@@ -109,8 +109,11 @@ function nextQuestion() {
         state.isPlateQuestion = false;
     }
 
-    // Add to theoretical max points pool
-    state.maxPossibleScore += state.isPlateQuestion ? 150 : 100;
+    // Add to theoretical max points pool (Dinamik Puanlama)
+    const remainingCitiesForMax = cities.length - state.askedCities.length;
+    const diffMultiplier = 0.2 + (0.8 * (remainingCitiesForMax / cities.length));
+    const baseValue = state.isPlateQuestion ? 150 : 100;
+    state.maxPossibleScore += Math.max(Math.round(baseValue * diffMultiplier), 5);
 
     // Update progress tracker
     const currentQuestion = Math.min(state.askedCities.length + 1, state.targetCount);
@@ -211,10 +214,14 @@ function checkAnswer(clickedId) {
         setTimeout(() => mapContainer.classList.remove('flash-green'), 500);
         
         // Calculate points: Max 100 (name) or 150 (plate) per question, scales down with time. Second attempt divides by 2.
+        // Dinamik Zorluk Çarpanı eklendi (harita boşken yüksek puan, doluyken düşük puan)
+        const remainingCities = cities.length - state.askedCities.length;
+        const difficultyMultiplier = 0.2 + (0.8 * (remainingCities / cities.length));
+
         const basePoints = state.isPlateQuestion ? 150 : 100;
         const timeMultiplier = state.timeLeft / 10.0; // 0.0 to 1.0
         const attemptMultiplier = state.attempts === 1 ? 1 : 0.5;
-        const pointsEarned = Math.round(basePoints * timeMultiplier * attemptMultiplier);
+        const pointsEarned = Math.round(basePoints * difficultyMultiplier * timeMultiplier * attemptMultiplier);
         
         state.score += Math.max(pointsEarned, 5); // at least 5 points for correct answer
         scoreEl.textContent = state.score;
@@ -295,11 +302,15 @@ function endGame(message) {
 
 function calculateBadge(score, targetCount) {
     const maxScore = state.maxPossibleScore || (targetCount * 100);
-    const percentage = score / maxScore;
+    let percentage = 0;
+    if (maxScore > 0) percentage = score / maxScore;
     
-    if (percentage === 1) return "Evliya Çelebi 🏕️";
-    if (percentage >= 0.7) return "Türkiye Gezgini 🌍";
-    if (percentage >= 0.4) return "Yolcu 🎒";
+    if (percentage >= 1.0) return "Evliya Çelebi 🏕️";
+    if (percentage >= 0.90) return "Ayaklı Navigasyon 🧭";
+    if (percentage >= 0.75) return "Uzun Yol Kaptanı 🚌";
+    if (percentage >= 0.60) return "Çaylak Kâşif 🚶‍♂️";
+    if (percentage >= 0.40) return "GPS Mağduru 📱";
+    if (percentage >= 0.20) return "Tabelalara Küskün 🤷‍♂️";
     return "Ev Kuşu 🏠";
 }
 

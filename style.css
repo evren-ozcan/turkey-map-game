@@ -668,3 +668,74 @@ svg {
 @keyframes toastOut {
     to { transform: translateY(-20px); opacity: 0; }
 }
+
+/* Responsive - Mobile Landscape (Telefonu Yan Çevirme) */
+@media (max-height: 500px) and (orientation: landscape) {
+    body {
+        overflow: hidden;
+    }
+    
+    #wrapper {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        grid-template-rows: min-content min-content 1fr;
+        grid-template-areas: 
+            "top map"
+            "center map"
+            "controls map";
+        gap: 5px;
+        padding: 5px 15px;
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100dvh;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    
+    .hud-top {
+        grid-area: top;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .hud-center {
+        grid-area: center;
+        margin: 5px 0;
+        padding: 0;
+    }
+    
+    .controls {
+        grid-area: controls;
+        margin: 0;
+        padding: 0;
+        padding-bottom: env(safe-area-inset-bottom, 5px);
+    }
+    
+    .dropdowns-row {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .map-container {
+        grid-area: map;
+        height: 100dvh;
+        max-height: 100dvh;
+        padding: 10px;
+        margin: 0;
+    }
+    
+    svg {
+        height: 100%;
+        max-height: 95dvh;
+        transform: scale(1);
+    }
+    
+    .title-text { font-size: 1.4rem !important; margin-bottom: 2px !important; }
+    .large-timer { font-size: 1.6rem; margin-bottom: 2px; }
+    .subtitle-text { font-size: 0.75rem !important; margin-bottom: 0 !important; }
+    .feedback-text { font-size: 0.85rem; height: 1rem; margin-top: 4px; }
+    
+    .primary-btn.game-btn { font-size: 0.85rem; padding: 8px; }
+    .secondary-btn.leader-btn { font-size: 0.8rem; padding: 6px; }
+    .glass-select.modern-dropdown { padding: 6px 8px; font-size: 0.8rem; }
+}
