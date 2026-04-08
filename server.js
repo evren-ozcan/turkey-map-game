@@ -5,7 +5,6 @@ const fetch = require('cross-fetch');
 const path = require('path');
 const crypto = require('crypto');
 const leoProfanity = require('leo-profanity');
-const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Load English and Turkish swear words
@@ -34,11 +33,17 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '')));
 
 // Rate Limiter API Skor Gönderimleri
-const scoreLimiter = rateLimit({
-    windowMs: 60 * 1000, // 1 dakika
-    max: 2, // 1 dakikada max 2 defa gönderilebilir
-    message: { error: 'Çok hızlı skor yolluyorsunuz. Lütfen 1 dakika bekleyin.' }
-});
+let scoreLimiter = (req, res, next) => next();
+try {
+    const rateLimit = require('express-rate-limit');
+    scoreLimiter = rateLimit({
+        windowMs: 60 * 1000,
+        max: 2,
+        message: { error: 'Çok hızlı skor yolluyorsunuz. Lütfen 1 dakika bekleyin.' }
+    });
+} catch (err) {
+    console.warn("⚠️ Eski Node sürümü: Rate Limit yerelde kapalı, Render'da aktif olacak.");
+}
 
 // Initialize Supabase
 const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
