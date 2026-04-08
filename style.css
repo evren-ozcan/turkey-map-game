@@ -676,12 +676,14 @@ svg {
     #wrapper {
         display: grid;
         grid-template-columns: 165px 1fr;
-        grid-template-rows: min-content min-content 1fr;
+        grid-template-rows: 1fr min-content min-content min-content 1fr;
         grid-template-areas: 
+            ". map"
             "top map"
             "center map"
-            "controls map";
-        gap: 2px;
+            "controls map"
+            ". map";
+        gap: 4px;
         padding: 4px 8px;
         min-height: 100vh;
         align-items: center;
