@@ -38,8 +38,21 @@ let state = {
 };
 
 // Start Game Logic
+function enterFullscreen() {
+    if (window.innerWidth <= 900 || window.innerHeight <= 600) {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().catch(() => {});
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen().catch(() => {});
+        }
+    }
+}
+
 function startGame(keepCities = false) {
     if (state.status === 'PLAYING') return;
+    
+    enterFullscreen();
     
     state.score = 0;
     state.maxPossibleScore = 0;
