@@ -694,12 +694,13 @@ svg {
         grid-area: top;
         padding: 0;
         margin: 0;
-        flex-direction: row;
+        flex-direction: column;
         gap: 4px;
+        align-items: stretch;
     }
-    .stat-pill { padding: 2px 6px; gap: 4px; }
+    .stat-pill { padding: 4px 8px; gap: 4px; justify-content: space-between; }
     .stat-pill .label { font-size: 0.6rem; }
-    .stat-pill .value { font-size: 0.95rem; }
+    .stat-pill .value { font-size: 0.95rem; white-space: nowrap; }
     
     .hud-center {
         grid-area: center;
