@@ -5,6 +5,7 @@ const fetch = require('cross-fetch');
 const path = require('path');
 const crypto = require('crypto');
 const leoProfanity = require('leo-profanity');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Load English and Turkish swear words
@@ -31,6 +32,13 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '')));
+
+// Rate Limiter API Skor Gönderimleri
+const scoreLimiter = rateLimit({
+    windowMs: 60 * 1000, // 1 dakika
+    max: 2, // 1 dakikada max 2 defa gönderilebilir
+    message: { error: 'Çok hızlı skor yolluyorsunuz. Lütfen 1 dakika bekleyin.' }
+});
 
 // Initialize Supabase
 const supabaseUrl = process.env.SUPABASE_URL || 'https://placeholder.supabase.co';
@@ -60,14 +68,29 @@ app.get('/api/leaderboard', async (req, res) => {
     }
 });
 
-// POST /api/scores - Submit a score (auto or named)
-// Auto mode:  body = { score, badge, city_count, player_token? }
-// Named mode: body = { score, badge, city_count, player_token?, player_name }
-app.post('/api/scores', async (req, res) => {
-    const { player_name, player_token, score, badge, city_count } = req.body;
+// POST /api/scores - Submit a score
+app.post('/api/scores', scoreLimiter, async (req, res) => {
+    const { player_name, player_token, score, badge, city_count, signature } = req.body;
 
-    if (score == null || !badge || !city_count) {
-        return res.status(400).json({ error: 'Missing required fields' });
+    if (score == null || !badge || !city_count || !signature) {
+        return res.status(400).json({ error: 'Eksik veya hatalı veri gönderimi tespit edildi.' });
+    }
+
+    // 1- BAKCEND SANITY CHECK (Mantık Kontrolü)
+    const MAX_SCORE_PER_CITY = 150;
+    const MAX_POSSIBLE_SCORE = city_count * MAX_SCORE_PER_CITY;
+    
+    if (score < 0 || score > MAX_POSSIBLE_SCORE || city_count <= 0 || city_count > 81) {
+        console.warn(`Hile tespit edildi: Puan = ${score}, Sınır = ${MAX_POSSIBLE_SCORE}`);
+        return res.status(400).json({ error: 'Oyun puanınız mantıksal sınırların dışında!' });
+    }
+
+    // 2- GİZLİ İMZA (Frontend-Backend Hashing)
+    const salt = "TrMap_SecR3T_2026!";
+    const expectedSignature = crypto.createHash('sha256').update(`${score}:${city_count}:${salt}`).digest('hex');
+    if (signature !== expectedSignature) {
+        console.warn(`Geçersiz İmza! Beklenen: ${expectedSignature}, Gelen: ${signature}`);
+        return res.status(400).json({ error: 'Oyun imzanız doğrulanamadı. Lütfen hile kullanmayınız.' });
     }
 
     // Store raw IP and full user agent

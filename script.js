@@ -313,6 +313,14 @@ function endGame(message) {
 
 // --- Phase 2: Badges, Leaderboard, Share ---
 
+async function generateSignature(score, targetCount) {
+    const salt = "TrMap_SecR3T_2026!";
+    const msg = new TextEncoder().encode(`${score}:${targetCount}:${salt}`);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msg);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 function calculateBadge(score, targetCount) {
     const maxScore = state.maxPossibleScore || (targetCount * 100);
     let percentage = 0;
@@ -336,6 +344,8 @@ async function autoSubmitScore(badge) {
     const playerNameInput = document.getElementById('player-name');
     
     try {
+        const signature = await generateSignature(state.score, state.targetCount);
+
         const response = await fetch('/api/scores', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -343,7 +353,8 @@ async function autoSubmitScore(badge) {
                 score: state.score,
                 badge: badge,
                 city_count: state.targetCount,
-                player_token: state.playerToken
+                player_token: state.playerToken,
+                signature: signature
             })
         });
         
