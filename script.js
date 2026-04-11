@@ -303,9 +303,18 @@ function endGame(message) {
     
     // Show recap modal immediately
     const badge = calculateBadge(state.score, state.targetCount);
-    recapScoreEl.textContent = state.score;
     recapBadgeEl.textContent = badge;
     recapModal.classList.remove('hidden');
+    animateValue(recapScoreEl, 0, state.score, 1500);
+    
+    if (window.confetti) {
+        confetti({
+            particleCount: 120,
+            spread: 90,
+            origin: { y: 0.6 },
+            colors: ['#22C1C3', '#14B8A6', '#ffffff']
+        });
+    }
     
     // Auto-submit score in background
     autoSubmitScore(badge);
@@ -539,3 +548,17 @@ document.addEventListener('DOMContentLoaded', fetchWelcomeStats);
 document.getElementById('welcome-start-btn')?.addEventListener('click', () => {
     document.getElementById('welcome-modal').classList.add('hidden');
 });
+
+function animateValue(obj, start, end, duration) {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        obj.innerHTML = Math.floor(easeOut * (end - start) + start);
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
