@@ -257,7 +257,7 @@ app.get('/api/players/:token/stats', async (req, res) => {
     try {
         const { data: myBest, error: myErr } = await supabase
             .from('leaderboard')
-            .select('player_name, score, badge')
+            .select('player_name, score, badge, city_count')
             .eq('player_token', token)
             .order('score', { ascending: false })
             .order('timestamp', { ascending: true })
@@ -293,6 +293,7 @@ app.get('/api/players/:token/stats', async (req, res) => {
             player_name: bestScoreObj.player_name,
             best_score: bestScoreObj.score,
             best_badge: bestScoreObj.badge,
+            mode: bestScoreObj.city_count,
             rank: rank
         });
 

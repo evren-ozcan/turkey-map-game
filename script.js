@@ -523,7 +523,7 @@ async function fetchWelcomeStats() {
             document.getElementById('welcome-score').textContent = data.best_score;
             document.getElementById('welcome-badge').textContent = data.best_badge;
             if (data.rank > 0) {
-                document.getElementById('welcome-rank').textContent = `${data.rank}. Sıra`;
+                document.getElementById('welcome-rank').innerHTML = `${data.rank}. Sıra <span style="font-size:0.9rem; font-weight:normal; opacity:0.8;">(${data.mode} Şehir)</span>`;
             } else {
                 document.getElementById('welcome-rank').textContent = "-";
             }
