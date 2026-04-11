@@ -166,6 +166,22 @@
         </div>
     </div>
 
+    <!-- Welcome Back Modal -->
+    <div id="welcome-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel" style="max-height: 90vh; overflow-y: auto;">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">👋 Tekrar Hoş Geldin!</h2>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <p id="welcome-name" style="font-size: 1.4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 10px;">Oyuncu İsmi</p>
+                <p style="font-size: 1.1rem; margin-bottom: 8px;">Önceki en yüksek skorun: <span id="welcome-score" class="score-val" style="display:inline; padding:0 5px;">0</span> Puan</p>
+                <p style="font-size: 1.1rem; margin-bottom: 8px;">En iyi unvanın: <span id="welcome-badge" style="font-weight:bold; color: #FFF;">Unvan</span></p>
+                <p style="font-size: 1.2rem; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    Şu an tablodaki sıralaman: <span id="welcome-rank" style="font-weight: 800; color: #FFD700; font-size:1.3rem;">0. Sıra</span>
+                </p>
+            </div>
+            <button id="welcome-start-btn" class="primary-btn game-btn" style="width: 100%; font-size: 1.2rem; padding: 12px;">DAHA İYİ BİR SKOR İÇİN BAŞLA!</button>
+        </div>
+    </div>
+
     <!-- Leaderboard Modal -->
     <div id="leaderboard-modal" class="modal-overlay hidden">
         <div class="modal-content glass-panel leaderboard-content">

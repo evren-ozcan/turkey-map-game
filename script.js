@@ -505,3 +505,30 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
+// --- Welcome Back Feature ---
+async function fetchWelcomeStats() {
+    if (!state.playerToken) return;
+    try {
+        const res = await fetch(`/api/players/${state.playerToken}/stats`);
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('welcome-name').textContent = data.player_name;
+            document.getElementById('welcome-score').textContent = data.best_score;
+            document.getElementById('welcome-badge').textContent = data.best_badge;
+            if (data.rank > 0) {
+                document.getElementById('welcome-rank').textContent = `${data.rank}. Sıra`;
+            } else {
+                document.getElementById('welcome-rank').textContent = "-";
+            }
+            document.getElementById('welcome-modal').classList.remove('hidden');
+        }
+    } catch (e) {
+        console.error("Error fetching welcome stats:", e);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', fetchWelcomeStats);
+
+document.getElementById('welcome-start-btn')?.addEventListener('click', () => {
+    document.getElementById('welcome-modal').classList.add('hidden');
+});

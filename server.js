@@ -240,6 +240,60 @@ app.patch('/api/players/:token', async (req, res) => {
     }
 });
 
+// GET /api/players/:token/stats - Get player's personal best and leaderboard rank
+app.get('/api/players/:token/stats', async (req, res) => {
+    const { token } = req.params;
+    
+    if (!token) {
+        return res.status(400).json({ error: 'Token eksik' });
+    }
+
+    try {
+        const { data: myBest, error: myErr } = await supabase
+            .from('leaderboard')
+            .select('player_name, score, badge')
+            .eq('player_token', token)
+            .order('score', { ascending: false })
+            .order('timestamp', { ascending: true })
+            .limit(1);
+
+        if (myErr) throw myErr;
+        
+        if (!myBest || myBest.length === 0) {
+            return res.status(404).json({ message: 'Henüz skor yok' });
+        }
+
+        const bestScoreObj = myBest[0];
+
+        const { data: allScores, error: allErr } = await supabase
+            .from('leaderboard')
+            .select('player_token, score')
+            .order('score', { ascending: false })
+            .order('timestamp', { ascending: true });
+        
+        if (allErr) throw allErr;
+
+        let rank = 1;
+
+        for (let i = 0; i < allScores.length; i++) {
+            if (allScores[i].player_token === token) {
+                rank = i + 1;
+                break;
+            }
+        }
+
+        res.json({
+            player_name: bestScoreObj.player_name,
+            best_score: bestScoreObj.score,
+            best_badge: bestScoreObj.badge,
+            rank: rank
+        });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // PATCH /api/scores/:id/share - Mark a score row as shared
 app.patch('/api/scores/:id/share', async (req, res) => {
     const { id } = req.params;
