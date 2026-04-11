@@ -185,7 +185,16 @@
     <!-- Leaderboard Modal -->
     <div id="leaderboard-modal" class="modal-overlay hidden">
         <div class="modal-content glass-panel leaderboard-content">
-            <h2>🏆 En İyiler Tablosu</h2>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <h2 style="margin-bottom: 0;">🏆 En İyiler Tablosu</h2>
+                <select id="leaderboard-filter" class="glass-input" style="width: auto; padding: 4px 10px; font-size: 0.9rem;">
+                    <option value="all">Tüm Kategoriler</option>
+                    <option value="5">5 Şehir Sınıfı</option>
+                    <option value="10">10 Şehir Sınıfı</option>
+                    <option value="20">20 Şehir Sınıfı</option>
+                    <option value="81">Bütün Şehirler (81)</option>
+                </select>
+            </div>
             <div class="table-container">
                 <table id="leaderboard-table">
                     <thead>

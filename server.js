@@ -59,9 +59,15 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 // GET /api/leaderboard - Get top 10 scores
 app.get('/api/leaderboard', async (req, res) => {
     try {
-        const { data, error } = await supabase
+        let query = supabase
             .from('leaderboard')
-            .select('id, player_name, score, badge, city_count, timestamp')
+            .select('id, player_name, score, badge, city_count, timestamp');
+            
+        if (req.query.cityCount && req.query.cityCount !== 'all') {
+            query = query.eq('city_count', parseInt(req.query.cityCount));
+        }
+
+        const { data, error } = await query
             .order('score', { ascending: false })
             .order('timestamp', { ascending: true })
             .limit(10);
@@ -268,6 +274,7 @@ app.get('/api/players/:token/stats', async (req, res) => {
         const { data: allScores, error: allErr } = await supabase
             .from('leaderboard')
             .select('player_token, score')
+            .eq('city_count', bestScoreObj.city_count)
             .order('score', { ascending: false })
             .order('timestamp', { ascending: true });
         

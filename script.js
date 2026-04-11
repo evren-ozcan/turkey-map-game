@@ -384,7 +384,14 @@ document.getElementById('close-recap-btn').addEventListener('click', () => {
 });
 
 document.getElementById('show-leaderboard-btn').addEventListener('click', () => {
-    fetchLeaderboard();
+    const currentMode = document.getElementById('count-select').value;
+    const filterEl = document.getElementById('leaderboard-filter');
+    if (filterEl) filterEl.value = currentMode;
+    fetchLeaderboard(currentMode);
+});
+
+document.getElementById('leaderboard-filter')?.addEventListener('change', (e) => {
+    fetchLeaderboard(e.target.value);
 });
 
 document.getElementById('close-leaderboard-btn').addEventListener('click', () => {
@@ -453,9 +460,9 @@ document.getElementById('share-btn').addEventListener('click', () => {
     }
 });
 
-async function fetchLeaderboard() {
+async function fetchLeaderboard(cityCount = 'all') {
     try {
-        const res = await fetch('/api/leaderboard');
+        const res = await fetch(`/api/leaderboard?cityCount=${cityCount}`);
         if (!res.ok) throw new Error("Failed to fetch");
         const json = await res.json();
         
