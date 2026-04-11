@@ -183,7 +183,7 @@ app.post('/api/scores', scoreLimiter, async (req, res) => {
         }
 
         if (!finalToken) {
-            finalToken = crypto.randomUUID();
+            finalToken = crypto.randomUUID ? crypto.randomUUID() : crypto.randomBytes(16).toString("hex");
         }
     }
 
