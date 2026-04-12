@@ -98,37 +98,9 @@ body {
     }
 }
 
-/* Landscape Mobile Fixes */
-@media screen and (orientation: landscape) and (max-height: 600px) {
-    .hud-top {
-        padding: calc(5px + env(safe-area-inset-top)) 20px 0px 20px;
-    }
-    .hud-center h1, .hud-center p {
-        display: none !important;
-    }
-    .map-container {
-        min-height: 190px;
-    }
-    .stat-pill {
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        padding: 0;
-    }
-    .stat-pill .label {
-        display: none;
-    }
-    .hud-bottom {
-        padding: 5px 0 !important;
-    }
-    .hud-bottom .dropdowns-row {
-        gap: 5px;
-    }
-    .secondary-btn.leader-btn {
-        padding: 8px;
-        margin-top: 4px !important;
-    }
-}    padding: 5px 14px;
+/* --- STAT PILL BASE --- */
+.stat-pill {
+    padding: 5px 14px;
     border-radius: 30px;
     display: flex;
     align-items: center;
@@ -864,42 +836,69 @@ svg {
     }
 }
 
-/* Landscape Mode Adjustments Overrides */
+/* ====== LANDSCAPE MOBILE (Portrait Tablet / Horizontal Phone) ====== */
 @media (max-height: 600px) and (orientation: landscape) {
-    /* Hide Title Text completely to avoid overlap */
-    .hud-center .title-text,
-    .hud-center .subtitle-text {
-        display: none !important;
-    }
-    /* Minimal Top Pills */
+    /* Safe area for notch/Dynamic Island */
     .hud-top {
-        padding: calc(5px + env(safe-area-inset-top)) 10px 0 10px !important;
-        gap: 2px !important;
+        padding: calc(6px + env(safe-area-inset-top)) 20px 4px calc(14px + env(safe-area-inset-left)) !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 10px !important;
     }
+    /* Pills side-by-side, compact */
     .stat-pill {
-        background: transparent !important;
-        border: none !important;
+        background: rgba(255,255,255,0.08) !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
         box-shadow: none !important;
-        padding: 0 !important;
-        justify-content: flex-start !important;
-        gap: 5px !important;
+        padding: 4px 10px !important;
+        border-radius: 20px !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 6px !important;
     }
     .stat-pill .label {
-        font-size: 0.6rem !important;
-        opacity: 0.6 !important;
+        font-size: 0.62rem !important;
+        opacity: 0.7 !important;
+        display: block !important;
     }
     .stat-pill .value {
-        font-size: 1rem !important;
+        font-size: 0.95rem !important;
     }
-    /* Prevent text wrapping on buttons */
+    /* Keep game name visible but compact */
+    .hud-center {
+        margin-top: 0 !important;
+    }
+    .hud-center .subtitle-text {
+        font-size: 0.6rem !important;
+        letter-spacing: 2px !important;
+    }
+    .hud-center h1.title-text {
+        font-size: 1.1rem !important;
+        margin-bottom: 1px !important;
+    }
+    /* Question prompt visible */
+    .hud-center #question-label, .hud-center #question {
+        display: block !important;
+        font-size: 0.8rem !important;
+    }
+    /* Feedback text */
+    .feedback-text {
+        font-size: 0.7rem !important;
+        min-height: 0.8rem !important;
+    }
+    /* Bottom controls */
+    .controls {
+        gap: 4px !important;
+    }
     #show-install-btn, #show-leaderboard-btn {
         white-space: nowrap !important;
-        font-size: 0.65rem !important;
+        font-size: 0.68rem !important;
         padding: 6px !important;
         margin-top: 2px !important;
     }
     .primary-btn.game-btn, .secondary-btn {
-        font-size: 0.7rem !important;
-        padding: 5px !important;
+        font-size: 0.72rem !important;
+        padding: 6px !important;
     }
 }
