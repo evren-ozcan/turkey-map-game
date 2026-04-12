@@ -52,6 +52,7 @@ body {
     gap: 8px;
     z-index: 10;
     padding: 10px 0;
+    padding-top: max(10px, env(safe-area-inset-top));
 }
 
 .glass-panel {
@@ -67,7 +68,7 @@ body {
 .hud-top {
     display: flex;
     justify-content: space-between;
-    padding: calc(10px + env(safe-area-inset-top)) 20px 6px 20px;
+    padding: 6px 20px;
     margin-top: 4px;
     width: 100%;
     box-sizing: border-box;
@@ -81,22 +82,7 @@ body {
     -webkit-backdrop-filter: blur(12px);
 }
 
-/* Mobile Specific App View Fixes */
-@media screen and (max-width: 480px) {
-    #welcome-start-btn {
-        font-size: 1rem !important;
-        padding: 10px !important;
-        white-space: normal;
-    }
-    #welcome-rank {
-        display: block;
-        white-space: nowrap;
-    }
-    #show-install-btn {
-        white-space: nowrap;
-        font-size: 0.8rem;
-    }
-}
+
 
 /* --- STAT PILL BASE --- */
 .stat-pill {
@@ -382,17 +368,19 @@ body {
 }
 
 .outline-btn {
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.4);
-    color: #fff;
-    padding: 10px 24px;
-    font-size: 1rem;
-    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(34, 193, 195, 0.25);
+    color: var(--text-white);
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 12px;
     cursor: pointer;
     transition: 0.3s;
     font-family: inherit;
+    width: 100%;
 }
-.outline-btn:hover { background: rgba(255,255,255,0.1); }
+.outline-btn:hover { background: rgba(34, 193, 195, 0.1); border-color: var(--cyan-primary); }
 
 .map-container {
     flex: 1;
@@ -729,176 +717,123 @@ svg {
     to { transform: translateY(-20px); opacity: 0; }
 }
 
-/* Responsive - Mobile Landscape (Telefonu Yan Çevirme) */
-@media (max-height: 600px) and (orientation: landscape) {
-    #wrapper {
-        display: grid;
-        grid-template-columns: 165px 1fr;
-        grid-template-rows: 1fr min-content min-content min-content 1fr;
-        grid-template-areas: 
-            ". map"
-            "top map"
-            "center map"
-            "controls map"
-            ". map";
-        gap: 4px;
-        padding: 4px 8px;
-        min-height: 100vh;
-        align-items: center;
-        justify-content: flex-start;
-    }
-    
-    .hud-top {
-        grid-area: top;
-        padding: 0;
-        margin: 0;
-        flex-direction: column;
-        gap: 4px;
-        align-items: stretch;
-    }
-    .stat-pill { padding: 4px 8px; gap: 4px; justify-content: space-between; }
-    .stat-pill .label { font-size: 0.6rem; }
-    .stat-pill .value { font-size: 0.95rem; white-space: nowrap; }
-    
-    .hud-center {
-        grid-area: center;
-        margin: 0;
-        padding: 0;
-    }
-    
-    .controls {
-        grid-area: controls;
-        margin: 0;
-        padding: 0;
-        padding-bottom: env(safe-area-inset-bottom, 2px);
-        gap: 4px;
-    }
-    
-    .dropdowns-row {
-        flex-direction: column;
-        gap: 4px;
-    }
-    
-    .map-container {
-        grid-area: map;
-        height: 100%;
-        min-height: 90vh;
-        padding: 2px;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    svg {
-        height: auto;
-        max-height: 96vh;
-        transform: scale(1);
-    }
-    
-    .title-text { font-size: 1.15rem !important; margin-bottom: 2px !important; line-height: 1.1; }
-    .large-timer { font-size: 1.35rem; margin-bottom: 2px; }
-    .subtitle-text { font-size: 0.65rem !important; margin-bottom: 0 !important; }
-    .feedback-text { font-size: 0.75rem; height: auto; min-height: 1rem; margin-top: 2px; line-height: 1.1; }
-    
-    .primary-btn.game-btn { font-size: 0.75rem; padding: 6px; }
-    .secondary-btn.leader-btn { font-size: 0.75rem; padding: 5px; }
-    .glass-select.modern-dropdown { padding: 4px 6px; font-size: 0.75rem; }
-
-    #endgame-actions {
-        flex-direction: column;
-        gap: 4px !important;
-    }
-    #restart-full-btn, #continue-game-btn {
-        width: 100% !important;
-        font-size: 0.75rem !important;
-        padding: 6px !important;
-    }
-}
 
 
-/* Extra Mobile Fixes */
+
+
+/* ======================================================
+   RESPONSIVE MOBILE (Portrait ≤ 480px)
+   ====================================================== */
 @media screen and (max-width: 480px) {
     #welcome-start-btn {
-        font-size: 0.9rem !important;
-        padding: 10px 5px !important;
+        font-size: 0.85rem !important;
+        padding: 10px 8px !important;
         white-space: normal !important;
-        line-height: 1.4 !important;
+        line-height: 1.3 !important;
     }
     #welcome-rank {
-        display: inline-block;
+        display: inline !important;
         white-space: nowrap !important;
-        font-size: 1.15rem !important;
+        font-size: 1.1rem !important;
     }
     #show-install-btn {
         white-space: nowrap !important;
-        font-size: 0.8rem !important;
+        font-size: 0.78rem !important;
     }
 }
 
-/* ====== LANDSCAPE MOBILE (Portrait Tablet / Horizontal Phone) ====== */
-@media (max-height: 600px) and (orientation: landscape) {
-    /* Safe area for notch/Dynamic Island */
+/* ======================================================
+   RESPONSIVE LANDSCAPE PHONE (max-height: 500px)
+   ====================================================== */
+@media (max-height: 500px) and (orientation: landscape) {
+    body { overflow-y: auto; }
+
+    #wrapper {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        grid-template-rows: auto auto 1fr auto;
+        grid-template-areas:
+            "top map"
+            "center map"
+            "center map"
+            "controls map";
+        gap: 6px;
+        width: 98%;
+        padding: 6px calc(8px + env(safe-area-inset-left));
+        padding-top: max(6px, env(safe-area-inset-top));
+        min-height: 100dvh;
+        align-items: start;
+        justify-content: flex-start;
+    }
+
+    /* TOP: Pills side by side */
     .hud-top {
-        padding: calc(6px + env(safe-area-inset-top)) 20px 4px calc(14px + env(safe-area-inset-left)) !important;
+        grid-area: top;
         flex-direction: row !important;
         justify-content: space-between !important;
         align-items: center !important;
-        gap: 10px !important;
+        gap: 6px !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
-    /* Pills side-by-side, compact */
     .stat-pill {
-        background: rgba(255,255,255,0.08) !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        box-shadow: none !important;
         padding: 4px 10px !important;
         border-radius: 20px !important;
         flex-direction: row !important;
         align-items: center !important;
-        gap: 6px !important;
+        gap: 5px !important;
+        flex: 1;
+        justify-content: center !important;
     }
-    .stat-pill .label {
-        font-size: 0.62rem !important;
-        opacity: 0.7 !important;
-        display: block !important;
-    }
-    .stat-pill .value {
-        font-size: 0.95rem !important;
-    }
-    /* Keep game name visible but compact */
+    .stat-pill .label { font-size: 0.6rem !important; opacity: 0.7 !important; }
+    .stat-pill .value { font-size: 0.9rem !important; }
+
+    /* CENTER: Game info panel */
     .hud-center {
-        margin-top: 0 !important;
+        grid-area: center;
+        margin: 0 !important;
+        padding: 0 !important;
+        align-items: flex-start !important;
+        text-align: left !important;
     }
-    .hud-center .subtitle-text {
-        font-size: 0.6rem !important;
-        letter-spacing: 2px !important;
-    }
-    .hud-center h1.title-text {
-        font-size: 1.1rem !important;
-        margin-bottom: 1px !important;
-    }
-    /* Question prompt visible */
-    .hud-center #question-label, .hud-center #question {
-        display: block !important;
-        font-size: 0.8rem !important;
-    }
-    /* Feedback text */
-    .feedback-text {
-        font-size: 0.7rem !important;
-        min-height: 0.8rem !important;
-    }
-    /* Bottom controls */
+    .hud-center .subtitle-text { font-size: 0.55rem !important; letter-spacing: 1.5px !important; margin-bottom: 0 !important; }
+    .hud-center h1.title-text { font-size: 1rem !important; margin-bottom: 2px !important; }
+    .large-timer { font-size: 1.6rem !important; margin-bottom: 1px !important; }
+    #question-label { font-size: 0.65rem !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }
+    #question { font-size: 1rem !important; font-weight: 800 !important; }
+    .feedback-text { font-size: 0.65rem !important; min-height: 1rem !important; margin-top: 2px !important; }
+
+    /* CONTROLS: Bottom panel */
     .controls {
+        grid-area: controls;
+        margin: 0 !important;
+        padding: 0 !important;
+        padding-bottom: env(safe-area-inset-bottom, 4px) !important;
         gap: 4px !important;
     }
-    #show-install-btn, #show-leaderboard-btn {
-        white-space: nowrap !important;
-        font-size: 0.68rem !important;
-        padding: 6px !important;
-        margin-top: 2px !important;
+    .dropdowns-row { flex-direction: column !important; gap: 3px !important; }
+    .glass-select.modern-dropdown { padding: 4px 6px !important; font-size: 0.7rem !important; }
+    .primary-btn.game-btn { font-size: 0.72rem !important; padding: 6px !important; }
+    .secondary-btn { font-size: 0.68rem !important; padding: 5px !important; }
+    .secondary-btn.leader-btn { font-size: 0.65rem !important; padding: 5px !important; }
+    #show-install-btn { white-space: nowrap !important; font-size: 0.62rem !important; }
+    #endgame-actions { flex-direction: column !important; gap: 3px !important; }
+    #restart-full-btn, #continue-game-btn { width: 100% !important; font-size: 0.7rem !important; padding: 6px !important; }
+
+    /* MAP: Right side */
+    .map-container {
+        grid-area: map;
+        height: 100dvh !important;
+        min-height: unset !important;
+        padding: 2px !important;
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
-    .primary-btn.game-btn, .secondary-btn {
-        font-size: 0.72rem !important;
-        padding: 6px !important;
+    svg {
+        max-height: 95dvh !important;
+        transform: scale(1) !important;
+        width: 100% !important;
     }
 }
