@@ -1,3 +1,4 @@
+html { background-color: var(--navy-dark); }
 :root {
     --navy-dark: #0F172A;
     --navy-light: #1E293B;
@@ -17,10 +18,16 @@
     font-family: 'Outfit', sans-serif;
 }
 
+html {
+    background-color: var(--navy-dark);
+}
+
 body {
     background: radial-gradient(circle at 50% 40%, rgba(34,193,195,0.1) 0%, transparent 60%), linear-gradient(180deg, var(--navy-light) 0%, var(--navy-dark) 100%);
     min-height: 100vh;
     min-height: 100dvh;
+    background-color: var(--navy-dark);
+    background-attachment: fixed;
     color: var(--text-white);
     display: flex;
     flex-direction: column;
@@ -60,7 +67,7 @@ body {
 .hud-top {
     display: flex;
     justify-content: space-between;
-    padding: 6px 20px;
+    padding: calc(10px + env(safe-area-inset-top)) 20px 6px 20px;
     margin-top: 4px;
     width: 100%;
     box-sizing: border-box;
@@ -72,7 +79,56 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 5px 14px;
+}
+
+/* Mobile Specific App View Fixes */
+@media screen and (max-width: 480px) {
+    #welcome-start-btn {
+        font-size: 1rem !important;
+        padding: 10px !important;
+        white-space: normal;
+    }
+    #welcome-rank {
+        display: block;
+        white-space: nowrap;
+    }
+    #show-install-btn {
+        white-space: nowrap;
+        font-size: 0.8rem;
+    }
+}
+
+/* Landscape Mobile Fixes */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    .hud-top {
+        padding: calc(5px + env(safe-area-inset-top)) 20px 0px 20px;
+    }
+    .hud-center h1, .hud-center p {
+        display: none !important;
+    }
+    .map-container {
+        min-height: 190px;
+    }
+    .stat-pill {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+    }
+    .stat-pill .label {
+        display: none;
+    }
+    .hud-bottom {
+        padding: 5px 0 !important;
+    }
+    .hud-bottom .dropdowns-row {
+        gap: 5px;
+    }
+    .secondary-btn.leader-btn {
+        padding: 8px;
+        margin-top: 4px !important;
+    }
+}    padding: 5px 14px;
     border-radius: 30px;
     display: flex;
     align-items: center;
@@ -785,5 +841,65 @@ svg {
         width: 100% !important;
         font-size: 0.75rem !important;
         padding: 6px !important;
+    }
+}
+
+
+/* Extra Mobile Fixes */
+@media screen and (max-width: 480px) {
+    #welcome-start-btn {
+        font-size: 0.9rem !important;
+        padding: 10px 5px !important;
+        white-space: normal !important;
+        line-height: 1.4 !important;
+    }
+    #welcome-rank {
+        display: inline-block;
+        white-space: nowrap !important;
+        font-size: 1.15rem !important;
+    }
+    #show-install-btn {
+        white-space: nowrap !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Landscape Mode Adjustments Overrides */
+@media (max-height: 600px) and (orientation: landscape) {
+    /* Hide Title Text completely to avoid overlap */
+    .hud-center .title-text,
+    .hud-center .subtitle-text {
+        display: none !important;
+    }
+    /* Minimal Top Pills */
+    .hud-top {
+        padding: calc(5px + env(safe-area-inset-top)) 10px 0 10px !important;
+        gap: 2px !important;
+    }
+    .stat-pill {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        justify-content: flex-start !important;
+        gap: 5px !important;
+    }
+    .stat-pill .label {
+        font-size: 0.6rem !important;
+        opacity: 0.6 !important;
+    }
+    .stat-pill .value {
+        font-size: 1rem !important;
+    }
+    /* Prevent text wrapping on buttons */
+    #show-install-btn, #show-leaderboard-btn {
+        white-space: nowrap !important;
+        font-size: 0.65rem !important;
+        padding: 6px !important;
+        margin-top: 2px !important;
+    }
+    .primary-btn.game-btn, .secondary-btn {
+        font-size: 0.7rem !important;
+        padding: 5px !important;
     }
 }
