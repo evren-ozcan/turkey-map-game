@@ -817,6 +817,7 @@ svg {
     .controls {
         grid-area: controls;
         margin: 0 !important;
+        margin-top: 22px !important;
         padding: 0 !important;
         padding-bottom: env(safe-area-inset-bottom, 4px) !important;
         gap: 6px !important;
