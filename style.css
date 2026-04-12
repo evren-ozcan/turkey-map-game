@@ -34,6 +34,9 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     animation: screenFadeIn 0.8s ease-out forwards;
+    /* iOS Safe Area - Notch / Dynamic Island */
+    padding-top: constant(safe-area-inset-top);
+    padding-top: env(safe-area-inset-top);
 }
 
 @keyframes screenFadeIn {
@@ -52,7 +55,7 @@ body {
     gap: 8px;
     z-index: 10;
     padding: 10px 0;
-    padding-top: max(10px, env(safe-area-inset-top));
+    padding-top: 10px;
 }
 
 .glass-panel {
@@ -745,7 +748,7 @@ svg {
 /* ======================================================
    RESPONSIVE LANDSCAPE PHONE (max-height: 500px)
    ====================================================== */
-@media (max-height: 500px) and (orientation: landscape) {
+@media (max-height: 600px) and (orientation: landscape) {
     body { overflow-y: auto; }
 
     #wrapper {
@@ -760,7 +763,7 @@ svg {
         gap: 6px;
         width: 98%;
         padding: 6px calc(8px + env(safe-area-inset-left));
-        padding-top: max(6px, env(safe-area-inset-top));
+        padding-top: env(safe-area-inset-top, 6px);
         min-height: 100dvh;
         align-items: start;
         justify-content: flex-start;
@@ -835,5 +838,35 @@ svg {
         max-height: 95dvh !important;
         transform: scale(1) !important;
         width: 100% !important;
+    }
+}
+
+
+/* ====== PORTRAIT MOBILE: SVG fills available screen ====== */
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    body {
+        padding-top: constant(safe-area-inset-top);
+        padding-top: env(safe-area-inset-top);
+    }
+    #wrapper {
+        justify-content: flex-start !important;
+        padding-top: 0 !important;
+    }
+    .hud-top {
+        padding-top: 8px !important;
+    }
+    .map-container {
+        flex: 1 !important;
+        min-height: 220px !important;
+        max-height: none !important;
+    }
+    svg {
+        max-height: 42vh !important;
+    }
+    /* Welcome rank — no wrap */
+    #welcome-rank {
+        white-space: nowrap !important;
+        display: inline !important;
+        font-size: 1.1rem !important;
     }
 }
