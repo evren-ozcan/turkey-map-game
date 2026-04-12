@@ -802,6 +802,7 @@ svg {
     .hud-center {
         grid-area: center;
         margin: 0 !important;
+        margin-top: 20px !important;
         padding: 0 !important;
         align-items: flex-start !important;
         text-align: left !important;
@@ -817,7 +818,7 @@ svg {
     .controls {
         grid-area: controls;
         margin: 0 !important;
-        margin-top: 22px !important;
+        margin-top: 20px !important;
         padding: 0 !important;
         padding-bottom: env(safe-area-inset-bottom, 4px) !important;
         gap: 6px !important;
