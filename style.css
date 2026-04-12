@@ -757,20 +757,23 @@ svg {
 
     #wrapper {
         display: grid;
-        grid-template-columns: 160px 1fr;
-        grid-template-rows: auto auto 1fr auto;
+        grid-template-columns: 165px 1fr;
+        grid-template-rows: 1fr auto auto auto 1fr;
         grid-template-areas:
+            ". map"
             "top map"
             "center map"
-            "center map"
-            "controls map";
-        gap: 6px;
+            "controls map"
+            ". map";
+        gap: 5px;
         width: 98%;
-        padding: 6px calc(8px + env(safe-area-inset-left));
-        padding-top: env(safe-area-inset-top, 6px);
+        padding: 0 calc(10px + env(safe-area-inset-left)) 0 calc(6px + env(safe-area-inset-left));
+        padding-top: env(safe-area-inset-top, 0px);
         min-height: 100dvh;
-        align-items: start;
+        max-height: 100dvh;
+        align-items: center;
         justify-content: flex-start;
+        overflow: hidden;
     }
 
     /* TOP: Pills side by side */
