@@ -758,7 +758,7 @@ svg {
     #wrapper {
         display: grid;
         grid-template-columns: 165px 1fr;
-        grid-template-rows: 1fr auto auto auto 1fr;
+        grid-template-rows: 1.4fr auto auto auto 0.6fr;
         grid-template-areas:
             ". map"
             "top map"
