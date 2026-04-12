@@ -163,6 +163,7 @@
                 <button id="continue-game-btn" class="primary-btn game-btn" style="flex:1; font-size: 0.9rem;">DEVAM ET</button>
             </div>
             <button id="show-leaderboard-btn" class="secondary-btn leader-btn" style="width: 100%;">🏆 LİDERLİK TABLOSU</button>
+            <button id="show-install-btn" class="secondary-btn leader-btn" style="width: 100%; margin-top: 10px; font-size: 0.9rem; opacity: 0.85;">📱 UYGULAMAYI İNDİR</button>
         </div>
     </div>
     
@@ -204,6 +205,33 @@
                 </p>
             </div>
             <button id="welcome-start-btn" class="primary-btn game-btn" style="width: 100%; font-size: 1.2rem; padding: 12px;">AYARLARINI SEÇ VE MEYDAN OKU!</button>
+        </div>
+    </div>
+
+    
+    <!-- Install Help Modal -->
+    <div id="install-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel" style="max-height: 90vh; overflow-y: auto; text-align: left; padding: 25px;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 20px; text-align: center;">📱 Nasıl Uygulama Olarak İndirilir?</h2>
+            <div style="margin-bottom: 20px; font-size: 0.95rem; line-height: 1.6;">
+                <h3 style="color: var(--cyan-primary); margin-bottom: 8px;">🍎 iOS (iPhone) için:</h3>
+                <ol style="padding-left: 20px; margin-bottom: 15px; color: var(--text-gray);">
+                    <li><strong>Safari</strong>'den bu web sitesine girin.</li>
+                    <li>Alt kısımdaki <strong>Paylaş</strong> (kare içinden çıkan ok) butonuna basın.</li>
+                    <li>Gelen menüden <strong>"Ana Ekrana Ekle" (Add to Home Screen)</strong> seçeneğine dokunun.</li>
+                </ol>
+
+                <h3 style="color: var(--cyan-primary); margin-bottom: 8px;">🤖 Android için:</h3>
+                <ol style="padding-left: 20px; margin-bottom: 15px; color: var(--text-gray);">
+                    <li><strong>Chrome</strong> tarayıcısından bu siteye girin.</li>
+                    <li>Sitenin altında çıkan <strong>"Ana Ekrana Ekle"</strong> balonuna tıklayın. (Çıkmazsa sağ üstteki üç noktaya tıklayıp "Ana Ekrana Ekle / Install App" seçin).</li>
+                </ol>
+
+                <p style="margin-top: 15px; font-size: 0.95rem; color: #fff; background: rgba(34, 193, 195, 0.1); border-left: 4px solid var(--cyan-primary); padding: 12px; border-radius: 4px 8px 8px 4px;">
+                    ✨ Telefonunuzun ana ekranında o havalı <strong>Neon Pini</strong> ile oyunumuzu göreceksiniz. Tıkladığınızda tarayıcı sınırlarından kurtulup, tam ekran gerçek bir mobil oyun deneyimi yaşayacaksınız!
+                </p>
+            </div>
+            <button id="close-install-btn" class="outline-btn" style="width: 100%;">Anladım</button>
         </div>
     </div>
 

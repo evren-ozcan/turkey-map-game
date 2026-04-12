@@ -480,6 +480,23 @@ document.getElementById('share-btn').addEventListener('click', () => {
     }
 });
 
+// Install Modal Handling
+const installModal = document.getElementById('install-modal');
+const showInstallBtn = document.getElementById('show-install-btn');
+const closeInstallBtn = document.getElementById('close-install-btn');
+
+if (showInstallBtn && closeInstallBtn && installModal) {
+    showInstallBtn.addEventListener('click', () => {
+        installModal.classList.remove('hidden');
+    });
+    closeInstallBtn.addEventListener('click', () => {
+        installModal.classList.add('hidden');
+    });
+    installModal.addEventListener('click', (e) => {
+        if (e.target === installModal) installModal.classList.add('hidden');
+    });
+}
+
 async function fetchLeaderboard(cityCount = 'all') {
     try {
         const res = await fetch(`/api/leaderboard?cityCount=${cityCount}`);
