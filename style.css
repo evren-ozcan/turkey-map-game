@@ -306,7 +306,6 @@ body {
 
 .primary-btn.game-btn {
     background: linear-gradient(180deg, var(--cyan-primary) 0%, var(--teal-sec) 100%);
-    box-shadow: 0 6px 0 #0d9488, 0 10px 20px rgba(34, 193, 195, 0.4), inset 0 2px 4px rgba(255,255,255,0.4);
     border-radius: 16px;
     padding: 13px;
     font-size: 1.1rem;
@@ -314,13 +313,13 @@ body {
     text-transform: uppercase;
     font-weight: 800;
     transform: translateY(0);
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition: transform 0.15s, opacity 0.15s;
     color: #fff;
 }
 
 .primary-btn.game-btn:active {
-    transform: translateY(6px) !important;
-    box-shadow: 0 0 0 #0d9488, 0 5px 15px rgba(34, 193, 195, 0.4), inset 0 2px 4px rgba(255,255,255,0.4) !important;
+    transform: scale(0.97);
+    opacity: 0.9;
 }
 
 .primary-btn:hover {
