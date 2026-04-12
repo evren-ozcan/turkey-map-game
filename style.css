@@ -137,8 +137,8 @@ body {
     text-align: center;
     z-index: 10;
     position: relative;
-    margin-bottom: 0px;
-    margin-top: -20px;
+    margin-bottom: 0;
+    margin-top: 0;
 }
 
 #question-label {
@@ -749,7 +749,11 @@ svg {
    RESPONSIVE LANDSCAPE PHONE (max-height: 500px)
    ====================================================== */
 @media (max-height: 600px) and (orientation: landscape) {
-    body { overflow-y: auto; }
+    /* Landscape: body safe-area is handled by wrapper, reset body padding */
+    body {
+        overflow-y: auto;
+        padding-top: 0 !important;
+    }
 
     #wrapper {
         display: grid;
@@ -789,7 +793,7 @@ svg {
         justify-content: center !important;
     }
     .stat-pill .label { font-size: 0.6rem !important; opacity: 0.7 !important; }
-    .stat-pill .value { font-size: 0.9rem !important; }
+    .stat-pill .value { font-size: 0.9rem !important; white-space: nowrap !important; }
 
     /* CENTER: Game info panel */
     .hud-center {
@@ -812,16 +816,16 @@ svg {
         margin: 0 !important;
         padding: 0 !important;
         padding-bottom: env(safe-area-inset-bottom, 4px) !important;
-        gap: 4px !important;
+        gap: 6px !important;
     }
-    .dropdowns-row { flex-direction: column !important; gap: 3px !important; }
+    .dropdowns-row { flex-direction: column !important; gap: 4px !important; }
     .glass-select.modern-dropdown { padding: 4px 6px !important; font-size: 0.7rem !important; }
-    .primary-btn.game-btn { font-size: 0.72rem !important; padding: 6px !important; }
-    .secondary-btn { font-size: 0.68rem !important; padding: 5px !important; }
-    .secondary-btn.leader-btn { font-size: 0.65rem !important; padding: 5px !important; }
-    #show-install-btn { white-space: nowrap !important; font-size: 0.62rem !important; }
-    #endgame-actions { flex-direction: column !important; gap: 3px !important; }
-    #restart-full-btn, #continue-game-btn { width: 100% !important; font-size: 0.7rem !important; padding: 6px !important; }
+    .primary-btn.game-btn { font-size: 0.72rem !important; padding: 7px !important; }
+    .secondary-btn { font-size: 0.68rem !important; padding: 6px !important; }
+    .secondary-btn.leader-btn { font-size: 0.65rem !important; padding: 6px !important; margin-top: 2px !important; }
+    #show-install-btn { white-space: nowrap !important; font-size: 0.62rem !important; margin-top: 2px !important; }
+    #endgame-actions { flex-direction: column !important; gap: 4px !important; }
+    #restart-full-btn, #continue-game-btn { width: 100% !important; font-size: 0.7rem !important; padding: 7px !important; }
 
     /* MAP: Right side */
     .map-container {
