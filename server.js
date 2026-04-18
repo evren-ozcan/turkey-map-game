@@ -56,18 +56,24 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 
 // API Routes
 
-// GET /api/leaderboard - Get top 10 scores
-app.get('/api/leaderboard', async (req, res) => {
+// GET /api/:game/leaderboard - Get top 10 scores
+app.get('/api/:game/leaderboard', async (req, res) => {
+    const tableName = req.params.game === 'world' ? 'world_leaderboard' : 'leaderboard';
     try {
         let query = supabase
-            .from('leaderboard')
+            .from(tableName)
             .select('id, player_name, score, badge, city_count, timestamp');
             
         if (req.query.cityCount && req.query.cityCount !== 'all') {
             const countParam = parseInt(req.query.cityCount);
             if (countParam === 5) {
-                // "5 Şehir ve Devamı" için 5 ile 80 arası (tamamı 81 olanlar hariç)
-                query = query.gte('city_count', 5).lt('city_count', 81);
+                if (req.params.game === 'world') {
+                    // Dünya için "5 Ülke ve Devamı" (Tam tur hariç, genelde 170+ ülke)
+                    query = query.gte('city_count', 5).lt('city_count', 170);
+                } else {
+                    // Türkiye için "5 Şehir ve Devamı" (81 hariç)
+                    query = query.gte('city_count', 5).lt('city_count', 81);
+                }
             } else {
                 query = query.eq('city_count', countParam);
             }
@@ -85,8 +91,9 @@ app.get('/api/leaderboard', async (req, res) => {
     }
 });
 
-// POST /api/scores - Submit a score
-app.post('/api/scores', scoreLimiter, async (req, res) => {
+// POST /api/:game/scores - Submit a score
+app.post('/api/:game/scores', scoreLimiter, async (req, res) => {
+    const tableName = req.params.game === 'world' ? 'world_leaderboard' : 'leaderboard';
     const { player_name, player_token, score, badge, city_count, signature } = req.body;
 
     if (score == null || !badge || !city_count || !signature) {
@@ -129,7 +136,7 @@ app.post('/api/scores', scoreLimiter, async (req, res) => {
         // Update all previous records with this token to the new name
         if (finalToken) {
             await supabase
-                .from('leaderboard')
+                .from(tableName)
                 .update({ player_name: finalName, is_custom_name: true })
                 .eq('player_token', finalToken);
         }
@@ -139,7 +146,7 @@ app.post('/api/scores', scoreLimiter, async (req, res) => {
         // 1. Check if this token already has a custom name
         if (finalToken) {
             const { data: byToken } = await supabase
-                .from('leaderboard')
+                .from(tableName)
                 .select('player_name, is_custom_name')
                 .eq('player_token', finalToken)
                 .eq('is_custom_name', true)
@@ -154,7 +161,7 @@ app.post('/api/scores', scoreLimiter, async (req, res) => {
         // 2. Check IP+UA for a custom name
         if (!finalName) {
             const { data: byIpUa } = await supabase
-                .from('leaderboard')
+                .from(tableName)
                 .select('player_name, player_token, is_custom_name')
                 .eq('ip_address', rawIp)
                 .eq('user_agent', rawUa)
@@ -171,7 +178,7 @@ app.post('/api/scores', scoreLimiter, async (req, res) => {
         // 3. Check IP+UA for any existing name (even random)
         if (!finalName) {
             const { data: byIpUaAny } = await supabase
-                .from('leaderboard')
+                .from(tableName)
                 .select('player_name, player_token')
                 .eq('ip_address', rawIp)
                 .eq('user_agent', rawUa)
@@ -196,7 +203,7 @@ app.post('/api/scores', scoreLimiter, async (req, res) => {
     // Insert the score record
     try {
         const { data: inserted, error } = await supabase
-            .from('leaderboard')
+            .from(tableName)
             .insert([{
                 player_name: finalName,
                 score: score,
@@ -223,8 +230,9 @@ app.post('/api/scores', scoreLimiter, async (req, res) => {
     }
 });
 
-// PATCH /api/players/:token - Update all records of a player to a new name
-app.patch('/api/players/:token', async (req, res) => {
+// PATCH /api/:game/players/:token - Update all records of a player to a new name
+app.patch('/api/:game/players/:token', async (req, res) => {
+    const tableName = req.params.game === 'world' ? 'world_leaderboard' : 'leaderboard';
     const { token } = req.params;
     const { player_name } = req.body;
 
@@ -240,7 +248,7 @@ app.patch('/api/players/:token', async (req, res) => {
 
     try {
         const { error } = await supabase
-            .from('leaderboard')
+            .from(tableName)
             .update({ player_name: finalName, is_custom_name: true })
             .eq('player_token', token);
 
@@ -252,8 +260,9 @@ app.patch('/api/players/:token', async (req, res) => {
     }
 });
 
-// GET /api/players/:token/stats - Get player's personal best and leaderboard rank
-app.get('/api/players/:token/stats', async (req, res) => {
+// GET /api/:game/players/:token/stats - Get player's personal best and leaderboard rank
+app.get('/api/:game/players/:token/stats', async (req, res) => {
+    const tableName = req.params.game === 'world' ? 'world_leaderboard' : 'leaderboard';
     const { token } = req.params;
     
     if (!token) {
@@ -262,7 +271,7 @@ app.get('/api/players/:token/stats', async (req, res) => {
 
     try {
         const { data: myBest, error: myErr } = await supabase
-            .from('leaderboard')
+            .from(tableName)
             .select('player_name, score, badge, city_count')
             .eq('player_token', token)
             .order('score', { ascending: false })
@@ -278,7 +287,7 @@ app.get('/api/players/:token/stats', async (req, res) => {
         const bestScoreObj = myBest[0];
 
         const { data: allScores, error: allErr } = await supabase
-            .from('leaderboard')
+            .from(tableName)
             .select('player_token, score')
             .eq('city_count', bestScoreObj.city_count)
             .order('score', { ascending: false })
@@ -308,13 +317,14 @@ app.get('/api/players/:token/stats', async (req, res) => {
     }
 });
 
-// PATCH /api/scores/:id/share - Mark a score row as shared
-app.patch('/api/scores/:id/share', async (req, res) => {
+// PATCH /api/:game/scores/:id/share - Mark a score row as shared
+app.patch('/api/:game/scores/:id/share', async (req, res) => {
+    const tableName = req.params.game === 'world' ? 'world_leaderboard' : 'leaderboard';
     const { id } = req.params;
 
     try {
         const { error } = await supabase
-            .from('leaderboard')
+            .from(tableName)
             .update({ shared: true })
             .eq('id', id);
 

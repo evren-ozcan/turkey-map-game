@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ülke Bulmaca - Dünyayı Keşfet</title>
+    
+    <meta name="description" content="Ülkeleri ismine, başkentine veya bayrağına göre bul!">
+    <meta name="theme-color" content="#0F172A">
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" href="/icon.png" type="image/png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Flag Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="//unpkg.com/three"></script>
+    <script src="//unpkg.com/globe.gl"></script>
+</head>
+<body>
+
+    <!-- Top HUD (Progress, Score) -->
+    <div class="hud-top fade-in" style="animation-delay: 0.1s;">
+        <div class="stat-pill"><span class="label">Soru</span><span id="progress" class="value progress-val">- / -</span></div>
+        <div class="stat-pill"><span class="label">Puan</span><span id="score" class="value score-val">0</span></div>
+    </div>
+
+    <!-- Center HUD (Timer, Question, Flag) -->
+    <div class="hud-center fade-in" style="animation-delay: 0.2s;">
+        <h2 class="subtitle-text">DÜNYAYI KEŞFET</h2>
+        <h1 class="title-text">ÜLKE BULMACA</h1>
+        
+        <div id="game-info" style="display: none; align-items: center; flex-direction: column;">
+            <div id="timer" class="large-timer timer-default" data-current-color="timer-default">15.0</div>
+            
+            <!-- Bayrak Sorusunda Bu Gösterilecek -->
+            <div id="flag-container" class="hidden">
+                 <span id="question-flag" class="fi" style="font-size: 5rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"></span>
+            </div>
+            
+            <!-- İsim/Başkent Sorusunda Bu Gösterilecek -->
+            <div id="text-container">
+                <div id="question-label"></div>
+                <div id="question" style="font-size: 2.2rem; font-weight: 800;"></div>
+            </div>
+            
+            <div id="feedback" class="feedback-text">🎯 Seçimini yap</div>
+        </div>
+        
+        <div id="pregame-desc" class="desc-text" style="margin-top: 10px;">🎯 Hazır Olduğunda Başla</div>
+    </div>
+
+    <!-- 3D Globe Container -->
+    <div id="globeViz"></div>
+
+    <!-- Bottom Controls -->
+    <div class="hud-bottom fade-in" style="animation-delay: 0.3s;">
+        <div class="controls">
+            <div class="dropdowns-row">
+                <select id="count-select" class="glass-select modern-dropdown">
+                    <option value="5">5 Ülke Sor</option>
+                    <option value="all">Bütün Dünyayı Seç (190+)</option>
+                </select>
+                <select id="mode-select" class="glass-select modern-dropdown">
+                    <option value="name">Ülke İsmiyle Sor</option>
+                    <option value="capital">Başkent ile Sor</option>
+                    <option value="flag">Bayrak ile Sor</option>
+                    <option value="mixed">Karışık Sor</option>
+                </select>
+            </div>
+            <button id="start-btn" class="primary-btn game-btn" style="width: 100%;">Oyuna Başla</button>
+            <div id="endgame-actions" style="display: none; gap: 10px;">
+                <button id="restart-full-btn" class="outline-btn">Baştan Başla</button>
+                <button id="continue-game-btn" class="primary-btn game-btn" style="flex: 1;">Devam Et (+5)</button>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 5px; width: 100%;">
+                <button id="show-leaderboard-btn" class="secondary-btn leader-btn" style="flex: 1; margin-bottom: 0; padding: 10px 5px; font-size: 0.85rem;">🏆 LİDERLİK</button>
+                <a href="/" class="secondary-btn leader-btn" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 10px 5px; font-size: 0.85rem;">🏠 ANA SAYFA</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- End Game Recap Modal -->
+    <div id="recap-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <h2 id="recap-title">Dünya Turu Bitti! 🌍</h2>
+            <div class="recap-stats">
+                <p>Skorunuz: <strong id="recap-score" class="score-val">0</strong></p>
+                <p>Unvanınız: <strong id="recap-badge" class="progress-val">Kâşif</strong></p>
+            </div>
+
+            <div class="recap-player-info">
+                <p>🎲 Seni <strong id="recap-assigned-name" class="score-val">...</strong> olarak kaydettik!</p>
+                <p class="recap-hint">İsmini değiştirmek istersen aşağıya yaz:</p>
+            </div>
+
+            <div class="recap-actions">
+                <div class="recap-name-row">
+                    <input type="text" id="player-name" class="glass-input" placeholder="Yeni isim..." maxlength="20">
+                    <button id="update-name-btn" class="primary-btn">Güncelle</button>
+                </div>
+                <button id="share-btn" class="secondary-btn">WhatsApp / Twitter'da Paylaş 📤</button>
+                <button id="close-recap-btn" class="outline-btn" style="margin-top: 6px;">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Back Modal -->
+    <div id="welcome-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px;">👋 Tekrar Hoş Geldin!</h2>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <p id="welcome-name" style="font-size: 1.4rem; font-weight: 800; color: var(--cyan-primary); margin-bottom: 10px;">Gezgin</p>
+                <p style="font-size: 1.1rem; margin-bottom: 8px;">Dünya rekorun: <span id="welcome-score" class="score-val" style="display:inline; padding:0 5px;">0</span> Puan</p>
+                <p style="font-size: 1.1rem; margin-bottom: 8px;">En iyi unvanın: <span id="welcome-badge" style="font-weight:bold; color: #FFF;">Acemi Kâşif</span></p>
+                <p style="font-size: 1.1rem; margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    Dünya sıralaman: <span id="welcome-rank" style="font-weight: 800; color: #FFD700; font-size:1.2rem;">...</span>
+                </p>
+            </div>
+            <button id="welcome-start-btn" class="primary-btn game-btn" style="width: 100%; font-size: 1.2rem; padding: 12px;">MACERAYA DEVAM ET!</button>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboard-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel leaderboard-content">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <h2 style="margin-bottom: 0;">🏆 En İyiler Tablosu</h2>
+                 <select id="leaderboard-filter" class="glass-input" style="width: auto; padding: 4px 10px; font-size: 0.9rem;">
+                    <option value="5">5 Ülke ve Devamı</option>
+                    <option value="all">Tam Tur (Tüm Dünya)</option>
+                </select>
+            </div>
+            <div class="table-container">
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>İsim</th>
+                            <th>Unvan</th>
+                            <th>Puan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Veriler buraya yüklenecek -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="close-leaderboard-btn" class="outline-btn" style="width: 100%; margin-top: 15px;">Kapat</button>
+        </div>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+    
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

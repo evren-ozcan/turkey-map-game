@@ -74,6 +74,7 @@ function startGame(keepCities = false) {
     }
     
     let requestedCount = parseInt(countSelect.value);
+    const increment = keepCities ? 5 : requestedCount;
     const remainingCount = cities.length - state.askedCities.length;
     
     if (remainingCount === 0 && keepCities) {
@@ -82,7 +83,7 @@ function startGame(keepCities = false) {
         provinces.forEach(p => p.classList.remove('passive'));
         state.targetCount = requestedCount;
     } else {
-        state.targetCount = state.askedCities.length + Math.min(requestedCount, remainingCount);
+        state.targetCount = state.askedCities.length + Math.min(increment, remainingCount);
     }
     
     progressEl.textContent = `${state.askedCities.length + 1} / ${state.targetCount}`;
@@ -366,7 +367,7 @@ async function autoSubmitScore(badge) {
     try {
         const signature = await generateSignature(state.score, state.targetCount);
 
-        const response = await fetch('/api/scores', {
+        const response = await fetch('/api/turkey/scores', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -431,7 +432,7 @@ document.getElementById('update-name-btn').addEventListener('click', async () =>
     }
     
     try {
-        const response = await fetch(`/api/players/${state.playerToken}`, {
+        const response = await fetch(`/api/turkey/players/${state.playerToken}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ player_name: name })
@@ -464,7 +465,7 @@ document.getElementById('share-btn').addEventListener('click', () => {
     
     // Mark this score row as shared
     if (state.currentScoreId) {
-        fetch(`/api/scores/${state.currentScoreId}/share`, { method: 'PATCH' })
+        fetch(`/api/turkey/scores/${state.currentScoreId}/share`, { method: 'PATCH' })
             .catch(e => console.error('Share mark error:', e));
     }
     
@@ -480,26 +481,11 @@ document.getElementById('share-btn').addEventListener('click', () => {
     }
 });
 
-// Install Modal Handling
-const installModal = document.getElementById('install-modal');
-const showInstallBtn = document.getElementById('show-install-btn');
-const closeInstallBtn = document.getElementById('close-install-btn');
 
-if (showInstallBtn && closeInstallBtn && installModal) {
-    showInstallBtn.addEventListener('click', () => {
-        installModal.classList.remove('hidden');
-    });
-    closeInstallBtn.addEventListener('click', () => {
-        installModal.classList.add('hidden');
-    });
-    installModal.addEventListener('click', (e) => {
-        if (e.target === installModal) installModal.classList.add('hidden');
-    });
-}
 
 async function fetchLeaderboard(cityCount = 'all') {
     try {
-        const res = await fetch(`/api/leaderboard?cityCount=${cityCount}`);
+        const res = await fetch(`/api/turkey/leaderboard?cityCount=${cityCount}`);
         if (!res.ok) throw new Error("Failed to fetch");
         const json = await res.json();
         
@@ -553,7 +539,7 @@ function showToast(message, type = 'success') {
 async function fetchWelcomeStats() {
     if (!state.playerToken) return;
     try {
-        const res = await fetch(`/api/players/${state.playerToken}/stats`);
+        const res = await fetch(`/api/turkey/players/${state.playerToken}/stats`);
         if (res.ok) {
             const data = await res.json();
             document.getElementById('welcome-name').textContent = data.player_name;

@@ -1,11 +1,17 @@
-const CACHE_NAME = 'turkey-map-v1';
+const CACHE_NAME = 'hub-map-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/style.css',
-  '/script.js',
   '/icon.png',
-  '/manifest.json'
+  '/manifest.json',
+  '/turkey/index.html',
+  '/turkey/style.css',
+  '/turkey/script.js',
+  '/turkey/cities.js',
+  '/world/index.html',
+  '/world/style.css',
+  '/world/script.js'
 ];
 
 // Install event: Caching assets
