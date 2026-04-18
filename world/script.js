@@ -529,6 +529,16 @@ document.getElementById('share-btn').addEventListener('click', shareScore);
     });
 });
 
+}
+
+// Handle window resize for globe responsiveness
+window.addEventListener('resize', () => {
+    if (globe) {
+        globe.width(window.innerWidth);
+        globe.height(window.innerHeight);
+    }
+});
+
 function showToast(msg, type='success') {
     const cont = document.getElementById('toast-container');
     const toast = document.createElement('div');

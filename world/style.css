@@ -357,9 +357,68 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Mobile rules */
+/* Mobile rules - Portrait */
 @media (max-width: 600px) {
     .title-text { font-size: 2rem; }
     .large-timer { font-size: 2.5rem; }
     .hud-bottom { bottom: 10px; width: 95%; }
+    .hud-top { padding: 5px 15px; }
+    .stat-pill { padding: 6px 12px; }
+    .stat-pill .value { font-size: 1rem; }
+}
+
+/* Landscape Mobile Adjustments (Similar to Turkey game) */
+@media (max-height: 550px) and (orientation: landscape) {
+    body {
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "top globe"
+            "center globe"
+            "bottom globe";
+    }
+
+    #globeViz {
+        grid-area: globe;
+        position: relative; /* Switch from absolute to grid-friendly */
+    }
+
+    .hud-top {
+        grid-area: top;
+        position: relative;
+        top: 0;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+        pointer-events: auto;
+    }
+
+    .hud-center {
+        grid-area: center;
+        position: relative;
+        top: 0;
+        width: 100%;
+        padding: 5px;
+    }
+
+    .hud-bottom {
+        grid-area: bottom;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .title-text { font-size: 1.5rem; }
+    .subtitle-text { font-size: 0.7rem; letter-spacing: 1px; }
+    .large-timer { font-size: 1.8rem; }
+    .desc-text { font-size: 0.8rem; }
+    .feedback-text { font-size: 0.9rem; margin-top: 0; }
+    
+    .controls { padding: 10px; gap: 5px; }
+    .glass-select, .primary-btn { padding: 8px; font-size: 0.9rem; }
+    
+    .stat-pill { width: 100%; justify-content: space-between; }
 }
