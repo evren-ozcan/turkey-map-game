@@ -529,13 +529,17 @@ document.getElementById('share-btn').addEventListener('click', shareScore);
     });
 });
 
-// Handle window resize for globe responsiveness
-window.addEventListener('resize', () => {
-    if (globe) {
-        globe.width(window.innerWidth);
-        globe.height(window.innerHeight);
-    }
-});
+// Handle window resize & orientation change for globe responsiveness
+function updateGlobeSize() {
+    if (!globe) return;
+    const isLandscape = window.matchMedia('(max-height: 550px) and (orientation: landscape)').matches;
+    const panelWidth = isLandscape ? 350 : 0;
+    globe.width(window.innerWidth - panelWidth);
+    globe.height(window.innerHeight);
+}
+
+window.addEventListener('resize', updateGlobeSize);
+window.addEventListener('orientationchange', () => setTimeout(updateGlobeSize, 150));
 
 function showToast(msg, type='success') {
     const cont = document.getElementById('toast-container');

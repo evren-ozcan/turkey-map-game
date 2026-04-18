@@ -146,23 +146,29 @@ html, body {
     pointer-events: auto; /* Explicitly enabled */
 }
 
-/* ====== LANDSCAPE MOBILE: 300px floating left panel ====== */
+/* ====== LANDSCAPE MOBILE: 350px floating left panel ====== */
 @media (max-height: 550px) and (orientation: landscape) {
     body { overflow: hidden; }
+
+    /* Globe sits only in the right area — panel-width defines the offset */
+    #globeViz {
+        left: 350px !important;
+        width: calc(100vw - 350px) !important;
+    }
 
     #game-ui-wrapper {
         position: fixed;
         top: 0;
         left: 0;
-        width: 300px;
+        width: 350px;
         height: 100vh;
         display: flex;
         flex-direction: column;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
         border-right: 1px solid rgba(255,255,255,0.08);
-        padding: calc(env(safe-area-inset-top, 0px) + 4px) 10px 4px calc(env(safe-area-inset-left, 0px) + 10px);
+        padding: calc(env(safe-area-inset-top, 0px) + 4px) 12px 4px calc(env(safe-area-inset-left, 0px) + 12px);
         overflow-y: auto;
         overflow-x: hidden;
     }
