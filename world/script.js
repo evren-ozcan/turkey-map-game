@@ -529,8 +529,6 @@ document.getElementById('share-btn').addEventListener('click', shareScore);
     });
 });
 
-}
-
 // Handle window resize for globe responsiveness
 window.addEventListener('resize', () => {
     if (globe) {
