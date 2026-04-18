@@ -17,7 +17,7 @@
 }
 
 body {
-    background-color: var(--navy-dark);
+    background-color: transparent;
     color: var(--text-white);
     overflow: hidden; /* Globe occupies full screen */
     width: 100vw;
@@ -30,7 +30,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -1; /* Keep it strictly behind everything */
+    z-index: 1; /* Lift above body background */
     cursor: grab;
     background-color: #000;
 }

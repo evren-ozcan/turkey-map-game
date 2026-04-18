@@ -61,22 +61,51 @@ body {
     margin-bottom: 15px;
 }
 
+.title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 5px;
+}
+
 .title-text {
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 800;
-    margin-bottom: 15px;
+    margin-bottom: 0;
     background: linear-gradient(180deg, #FFFFFF 0%, #A5F3FC 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+.install-mini-btn {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    color: #0ea5e9;
+    padding: 6px 12px;
+    border-radius: 12px;
+    display: none; /* Hidden by default, JS logic shows it if app not installed */
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.install-mini-btn:hover {
+    background: rgba(14, 165, 233, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.3);
+}
+
 .desc-text {
     color: var(--text-gray);
-    font-size: 1.25rem;
-    max-width: 600px;
-    margin: 0 auto 100px auto; /* Margin for pop-out icons */
-    line-height: 1.6;
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 80px;
 }
 
 /* Game Cards Container */
@@ -173,36 +202,7 @@ body {
 .game-card:hover .btn-white { background: #FFFFFF; }
 .game-card:hover .btn-cyan { background: #0284c7; box-shadow: 0 0 30px rgba(14, 165, 233, 0.5); }
 
-/* Footer */
-.footer {
-    margin-top: auto;
-    padding: 40px 0;
-    text-align: center;
-    color: var(--text-gray);
-    font-size: 0.9rem;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.btn-outline {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 24px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 100px;
-    color: var(--text-white);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin: 0 auto;
-}
-
-.btn-outline:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
-}
+/* Footer removed as per user request */
 
 /* Modal and Utilities (Restored) */
 .hidden { display: none !important; }
