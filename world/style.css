@@ -16,8 +16,8 @@
     font-family: 'Outfit', sans-serif;
 }
 
-body {
-    background-color: transparent;
+html, body {
+    background-color: #000 !important;
     color: var(--text-white);
     overflow: hidden; /* Globe occupies full screen */
     width: 100vw;
@@ -30,7 +30,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 1; /* Lift above body background */
+    z-index: 5; /* Middle layer */
     cursor: grab;
     background-color: #000;
 }

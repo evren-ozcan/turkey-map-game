@@ -94,9 +94,18 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Only show install button if installation is possible
-            if (showInstallBtn) showInstallBtn.style.display = 'inline-flex';
+            // Show install button if installation is possible
+            if (showInstallBtn) {
+                showInstallBtn.style.display = 'inline-flex';
+                showInstallBtn.classList.add('prompt-ready');
+            }
         });
+
+        // Manual check for mobile to show the guide button anyway
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile && showInstallBtn) {
+            showInstallBtn.style.display = 'inline-flex';
+        }
 
         if (showInstallBtn && closeInstallBtn && installModal) {
             showInstallBtn.addEventListener('click', () => {
