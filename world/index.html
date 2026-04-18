@@ -26,66 +26,69 @@
 </head>
 <body>
 
-    <!-- Top HUD (Progress, Score) -->
-    <div class="hud-top fade-in" style="animation-delay: 0.1s;">
-        <div class="stat-pill"><span class="label">Soru</span><span id="progress" class="value progress-val">- / -</span></div>
-        <div class="stat-pill"><span class="label">Puan</span><span id="score" class="value score-val">0</span></div>
-    </div>
-
-    <!-- Center HUD (Timer, Question, Flag) -->
-    <div class="hud-center fade-in" style="animation-delay: 0.2s;">
-        <h2 class="subtitle-text">DÜNYAYI KEŞFET</h2>
-        <h1 class="title-text">ÜLKE BULMACA</h1>
-        
-        <div id="game-info" style="display: none; align-items: center; flex-direction: column;">
-            <div id="timer" class="large-timer timer-default" data-current-color="timer-default">15.0</div>
-            
-            <!-- Bayrak Sorusunda Bu Gösterilecek -->
-            <div id="flag-container" class="hidden">
-                 <span id="question-flag" class="fi" style="font-size: 5rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"></span>
-            </div>
-            
-            <!-- İsim/Başkent Sorusunda Bu Gösterilecek -->
-            <div id="text-container">
-                <div id="question-label"></div>
-                <div id="question" style="font-size: 2.2rem; font-weight: 800;"></div>
-            </div>
-            
-            <div id="feedback" class="feedback-text">🎯 Seçimini yap</div>
+    <!-- Game UI Wrapper (HUD + Controls) -->
+    <div id="game-ui-wrapper">
+        <!-- Top HUD (Progress, Score) -->
+        <div class="hud-top fade-in" style="animation-delay: 0.1s;">
+            <div class="stat-pill"><span class="label">Soru</span><span id="progress" class="value progress-val">- / -</span></div>
+            <div class="stat-pill"><span class="label">Puan</span><span id="score" class="value score-val">0</span></div>
         </div>
-        
-        <div id="pregame-desc" class="desc-text" style="margin-top: 10px;">🎯 Hazır Olduğunda Başla</div>
+
+        <!-- Center HUD (Timer, Question, Flag) -->
+        <div class="hud-center fade-in" style="animation-delay: 0.2s;">
+            <h2 class="subtitle-text">DÜNYAYI KEŞFET</h2>
+            <h1 class="title-text">ÜLKE BULMACA</h1>
+            
+            <div id="game-info" style="display: none; align-items: center; flex-direction: column;">
+                <div id="timer" class="large-timer timer-default" data-current-color="timer-default">15.0</div>
+                
+                <!-- Bayrak Sorusunda Bu Gösterilecek -->
+                <div id="flag-container" class="hidden">
+                    <span id="question-flag" class="fi" style="font-size: 5rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"></span>
+                </div>
+                
+                <!-- İsim/Başkent Sorusunda Bu Gösterilecek -->
+                <div id="text-container">
+                    <div id="question-label"></div>
+                    <div id="question" style="font-size: 2.2rem; font-weight: 800;"></div>
+                </div>
+                
+                <div id="feedback" class="feedback-text">🎯 Seçimini yap</div>
+            </div>
+            
+            <div id="pregame-desc" class="desc-text" style="margin-top: 10px;">🎯 Hazır Olduğunda Başla</div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="hud-bottom fade-in" style="animation-delay: 0.3s;">
+            <div class="controls">
+                <div class="dropdowns-row">
+                    <select id="count-select" class="glass-select modern-dropdown">
+                        <option value="5">5 Ülke Sor</option>
+                        <option value="all">Bütün Dünyayı Seç (190+)</option>
+                    </select>
+                    <select id="mode-select" class="glass-select modern-dropdown">
+                        <option value="name">Ülke İsmiyle Sor</option>
+                        <option value="capital">Başkent ile Sor</option>
+                        <option value="flag">Bayrak ile Sor</option>
+                        <option value="mixed">Karışık Sor</option>
+                    </select>
+                </div>
+                <button id="start-btn" class="primary-btn game-btn" style="width: 100%;">Oyuna Başla</button>
+                <div id="endgame-actions" style="display: none; gap: 10px;">
+                    <button id="restart-full-btn" class="outline-btn">Baştan Başla</button>
+                    <button id="continue-game-btn" class="primary-btn game-btn" style="flex: 1;">Devam Et (+5)</button>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 5px; width: 100%;">
+                    <button id="show-leaderboard-btn" class="secondary-btn leader-btn" style="flex: 1; margin-bottom: 0; padding: 10px 5px; font-size: 0.85rem;">🏆 LİDERLİK</button>
+                    <a href="/" class="secondary-btn leader-btn" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 10px 5px; font-size: 0.85rem;">🏠 ANA SAYFA</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 3D Globe Container -->
     <div id="globeViz"></div>
-
-    <!-- Bottom Controls -->
-    <div class="hud-bottom fade-in" style="animation-delay: 0.3s;">
-        <div class="controls">
-            <div class="dropdowns-row">
-                <select id="count-select" class="glass-select modern-dropdown">
-                    <option value="5">5 Ülke Sor</option>
-                    <option value="all">Bütün Dünyayı Seç (190+)</option>
-                </select>
-                <select id="mode-select" class="glass-select modern-dropdown">
-                    <option value="name">Ülke İsmiyle Sor</option>
-                    <option value="capital">Başkent ile Sor</option>
-                    <option value="flag">Bayrak ile Sor</option>
-                    <option value="mixed">Karışık Sor</option>
-                </select>
-            </div>
-            <button id="start-btn" class="primary-btn game-btn" style="width: 100%;">Oyuna Başla</button>
-            <div id="endgame-actions" style="display: none; gap: 10px;">
-                <button id="restart-full-btn" class="outline-btn">Baştan Başla</button>
-                <button id="continue-game-btn" class="primary-btn game-btn" style="flex: 1;">Devam Et (+5)</button>
-            </div>
-            <div style="display: flex; gap: 8px; margin-top: 5px; width: 100%;">
-                <button id="show-leaderboard-btn" class="secondary-btn leader-btn" style="flex: 1; margin-bottom: 0; padding: 10px 5px; font-size: 0.85rem;">🏆 LİDERLİK</button>
-                <a href="/" class="secondary-btn leader-btn" style="flex: 1; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 10px 5px; font-size: 0.85rem;">🏠 ANA SAYFA</a>
-            </div>
-        </div>
-    </div>
 
     <!-- Modals -->
     <!-- End Game Recap Modal -->
