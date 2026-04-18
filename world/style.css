@@ -144,6 +144,9 @@ html, body {
     padding: 0 16px calc(env(safe-area-inset-bottom, 10px) + 10px) 16px;
     z-index: 20;
     pointer-events: auto; /* Explicitly enabled */
+    width: 100%;
+    max-width: 480px;     /* Prevent over-wide controls on large phones */
+    align-self: center;   /* Center horizontally in flex column */
 }
 
 /* ====== LANDSCAPE MOBILE: 350px floating left panel ====== */
@@ -214,7 +217,11 @@ html, body {
     .dropdowns-row { flex-direction: column; gap: 4px; }
     .glass-select { padding: 5px 8px; font-size: 0.72rem; }
     .primary-btn { padding: 7px; font-size: 0.78rem; border-radius: 10px; }
-    .secondary-btn.leader-btn { padding: 5px 8px; font-size: 0.7rem; }
+    /* Stack LİDERLİK/ANA SAYFA vertically so text never wraps */
+    .bottom-actions-row { flex-direction: column !important; gap: 4px !important; }
+    .secondary-btn.leader-btn { padding: 6px 8px; font-size: 0.72rem; white-space: nowrap; }
+    .endgame-actions-row { flex-direction: column !important; gap: 4px !important; }
+    #restart-full-btn, #continue-game-btn { width: 100% !important; font-size: 0.72rem; padding: 6px; }
 }
 
 
