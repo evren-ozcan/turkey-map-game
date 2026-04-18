@@ -239,7 +239,8 @@ html, body {
 
 .dropdowns-row {
     display: flex;
-    gap: 10px;
+    flex-direction: column; /* Always stacked — prevents overflow on any screen size */
+    gap: 8px;
 }
 .glass-select {
     flex: 1;

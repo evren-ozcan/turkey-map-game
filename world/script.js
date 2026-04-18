@@ -107,6 +107,8 @@ function initGlobe() {
             
             countriesData = filteredFeatures;
             globe.polygonsData(filteredFeatures);
+            // Apply correct size immediately (e.g. if starting in landscape)
+            updateGlobeSize();
         });
 }
 
@@ -536,6 +538,12 @@ function updateGlobeSize() {
     const panelWidth = isLandscape ? 350 : 0;
     globe.width(window.innerWidth - panelWidth);
     globe.height(window.innerHeight);
+    if (isLandscape) {
+        // Shift the Three.js viewport to render in the right area only
+        globe.renderer().setViewport(0, 0, window.innerWidth - panelWidth, window.innerHeight);
+    } else {
+        globe.renderer().setViewport(0, 0, window.innerWidth, window.innerHeight);
+    }
 }
 
 window.addEventListener('resize', updateGlobeSize);
