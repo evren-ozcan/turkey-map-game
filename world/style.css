@@ -50,7 +50,7 @@ html, body {
 }
 
 #game-ui-wrapper > div {
-    pointer-events: auto;
+    /* Do NOT blanket-enable pointer-events here — hud-center must be none */
 }
 
 /* ====== TOP ROW: SORU & PUAN pills ====== */
@@ -61,7 +61,7 @@ html, body {
     padding: calc(env(safe-area-inset-top, 8px) + 8px) 16px 8px 16px;
     flex-shrink: 0;
     z-index: 20;
-    pointer-events: auto;
+    pointer-events: auto; /* Explicitly enabled */
 }
 
 .stat-pill {
@@ -82,16 +82,15 @@ html, body {
 .stat-pill .value { font-size: 1.2rem; font-weight: 800; }
 .score-val { color: var(--teal-sec); text-shadow: 0 0 10px var(--glow-teal); }
 
-/* ====== CENTER: Title + game info — grows to fill space ====== */
+/* ====== CENTER: Title only — does NOT fill space, globe must be clickable ====== */
 .hud-center {
-    flex: 1;
+    flex-shrink: 0;       /* shrinks to content height only */
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 10px;
+    padding-top: 6px;
     text-align: center;
-    pointer-events: none;
+    pointer-events: none !important; /* Allow clicks to pass through to globe */
     z-index: 20;
 }
 
@@ -138,12 +137,13 @@ html, body {
     text-shadow: 0 2px 5px rgba(0,0,0,0.8);
 }
 
-/* ====== BOTTOM: Controls pinned to bottom ====== */
+/* ====== BOTTOM: Controls — pushed to bottom via margin-top:auto ====== */
 .hud-bottom {
     flex-shrink: 0;
+    margin-top: auto;     /* pushes to bottom without filling middle */
     padding: 0 16px calc(env(safe-area-inset-bottom, 10px) + 10px) 16px;
     z-index: 20;
-    pointer-events: auto;
+    pointer-events: auto; /* Explicitly enabled */
 }
 
 /* ====== LANDSCAPE MOBILE: 300px floating left panel ====== */
