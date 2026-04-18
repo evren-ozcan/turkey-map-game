@@ -64,7 +64,13 @@ app.get('/api/leaderboard', async (req, res) => {
             .select('id, player_name, score, badge, city_count, timestamp');
             
         if (req.query.cityCount && req.query.cityCount !== 'all') {
-            query = query.eq('city_count', parseInt(req.query.cityCount));
+            const countParam = parseInt(req.query.cityCount);
+            if (countParam === 5) {
+                // "5 Şehir ve Devamı" için 5 ile 80 arası (tamamı 81 olanlar hariç)
+                query = query.gte('city_count', 5).lt('city_count', 81);
+            } else {
+                query = query.eq('city_count', countParam);
+            }
         }
 
         const { data, error } = await query

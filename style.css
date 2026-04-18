@@ -469,8 +469,8 @@ svg {
 }
 
 .province.passive {
-    fill: rgba(255, 255, 255, 0.02) !important;
-    stroke: rgba(255, 255, 255, 0.05) !important;
+    fill: rgba(0, 0, 0, 0.4) !important;
+    stroke: rgba(255, 255, 255, 0.1) !important;
     pointer-events: none;
 }
 
