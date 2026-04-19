@@ -42,7 +42,7 @@ let state = {
     timerInterval: null,
     askedCities: [],
     targetCount: 81,
-    playerToken: localStorage.getItem('playerToken') || null,
+    playerToken: localStorage.getItem('turkeyPlayerToken') || null,
     assignedName: null,
     scoreSubmitted: false,
     currentScoreId: null
@@ -384,7 +384,8 @@ async function autoSubmitScore(badge) {
             state.playerToken = data.player_token;
             state.assignedName = data.assigned_name;
             state.currentScoreId = data.score_id;
-            localStorage.setItem('playerToken', data.player_token);
+            localStorage.setItem('turkeyPlayerToken', data.player_token);
+            localStorage.setItem('turkeyPlayerName', data.assigned_name);
             
             // Show the assigned name in recap modal
             if (assignedNameEl) assignedNameEl.textContent = data.assigned_name;
@@ -539,21 +540,24 @@ function showToast(message, type = 'success') {
 async function fetchWelcomeStats() {
     if (!state.playerToken) return;
 
-    // Show modal immediately with placeholder values
-    const storedName = localStorage.getItem('turkeyPlayerName') || '...';
-    document.getElementById('welcome-name').textContent = storedName;
-    document.getElementById('welcome-score').textContent = '-';
-    document.getElementById('welcome-badge').textContent = '...';
-    document.getElementById('welcome-rank').textContent = '...';
-    document.getElementById('welcome-modal').classList.remove('hidden');
+    // Only show modal instantly if user has played Turkey game before
+    const cachedName = localStorage.getItem('turkeyPlayerName');
+    if (cachedName) {
+        document.getElementById('welcome-name').textContent = cachedName;
+        document.getElementById('welcome-score').textContent = '-';
+        document.getElementById('welcome-badge').textContent = '...';
+        document.getElementById('welcome-rank').textContent = '...';
+        document.getElementById('welcome-modal').classList.remove('hidden');
+    }
 
-    // Silently update with real data when API responds
+    // Fetch real stats — show modal now if first visit with history
     try {
         const res = await fetch(`/api/turkey/players/${state.playerToken}/stats`);
         if (res.ok) {
             const data = await res.json();
+            if (!data.best_score && data.best_score !== 0) return; // No history
             document.getElementById('welcome-name').textContent = data.player_name;
-            localStorage.setItem('turkeyPlayerName', data.player_name); // Cache for next visit
+            localStorage.setItem('turkeyPlayerName', data.player_name);
             document.getElementById('welcome-score').textContent = data.best_score;
             document.getElementById('welcome-badge').textContent = data.best_badge;
             if (data.rank > 0) {
@@ -561,6 +565,7 @@ async function fetchWelcomeStats() {
             } else {
                 document.getElementById('welcome-rank').textContent = "-";
             }
+            document.getElementById('welcome-modal').classList.remove('hidden');
         }
     } catch (e) {
         console.error("Error fetching welcome stats:", e);

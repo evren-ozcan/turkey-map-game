@@ -13,7 +13,7 @@ let state = {
     timerInterval: null,
     askedCountries: [],
     targetCount: 5,
-    playerToken: localStorage.getItem('playerToken') || null,
+    playerToken: localStorage.getItem('worldPlayerToken') || null,
     playerName: localStorage.getItem('worldPlayerName') || 'Gezgin',
     currentMode: 'name',
     lastScoreId: null
@@ -150,23 +150,28 @@ initGlobe();
 async function loadPersonalStats() {
     if (!state.playerToken) return;
 
-    // Show modal immediately with placeholder values, don't wait for network
-    const storedName = localStorage.getItem('worldPlayerName') || '...';
-    document.getElementById('welcome-name').textContent = storedName;
-    document.getElementById('welcome-score').textContent = '-';
-    document.getElementById('welcome-badge').textContent = '...';
-    document.getElementById('welcome-rank').textContent = '...';
-    welcomeModal.classList.remove('hidden');
+    // Only show modal instantly if user has played before (has cached name)
+    const cachedName = localStorage.getItem('worldPlayerName');
+    if (cachedName) {
+        document.getElementById('welcome-name').textContent = cachedName;
+        document.getElementById('welcome-score').textContent = '-';
+        document.getElementById('welcome-badge').textContent = '...';
+        document.getElementById('welcome-rank').textContent = '...';
+        welcomeModal.classList.remove('hidden');
+    }
 
-    // Silently update with real data when API responds
+    // Fetch real stats — show modal now if first visit
     try {
         const res = await fetch(`/api/world/players/${state.playerToken}/stats`);
         if (res.ok) {
             const data = await res.json();
+            if (!data.best_score && data.best_score !== 0) return; // No history yet
             document.getElementById('welcome-name').textContent = data.player_name;
+            localStorage.setItem('worldPlayerName', data.player_name);
             document.getElementById('welcome-score').textContent = data.best_score;
             document.getElementById('welcome-badge').textContent = data.best_badge;
             document.getElementById('welcome-rank').textContent = `${data.rank}. Sıra (${data.mode} Ülke)`;
+            welcomeModal.classList.remove('hidden'); // show now if wasn't shown yet
         }
     } catch (e) { console.error("Stats load err", e); }
 }
@@ -466,6 +471,7 @@ async function autoSubmitWorldScore() {
             }
             document.getElementById('recap-assigned-name').textContent = data.assigned_name;
             state.playerName = data.assigned_name;
+            localStorage.setItem('worldPlayerToken', state.playerToken);
             localStorage.setItem('worldPlayerName', data.assigned_name);
         }
     } catch (e) {
