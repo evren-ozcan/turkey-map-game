@@ -42,7 +42,7 @@ let state = {
     timerInterval: null,
     askedCities: [],
     targetCount: 81,
-    playerToken: localStorage.getItem('turkeyPlayerToken') || null,
+    playerToken: localStorage.getItem('turkeyPlayerToken') || localStorage.getItem('playerToken') || null,
     assignedName: null,
     scoreSubmitted: false,
     currentScoreId: null

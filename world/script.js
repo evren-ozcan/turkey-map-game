@@ -13,7 +13,7 @@ let state = {
     timerInterval: null,
     askedCountries: [],
     targetCount: 5,
-    playerToken: localStorage.getItem('worldPlayerToken') || null,
+    playerToken: localStorage.getItem('worldPlayerToken') || localStorage.getItem('playerToken') || null,
     playerName: localStorage.getItem('worldPlayerName') || 'Gezgin',
     currentMode: 'name',
     lastScoreId: null
