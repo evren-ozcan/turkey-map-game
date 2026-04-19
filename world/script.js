@@ -75,7 +75,7 @@ function initGlobe() {
         .polygonAltitude(0.015)
         .polygonCapColor((d) => state.askedCountries.includes(d.iso) ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.01)')
         .polygonSideColor(() => 'rgba(0,0,0,0.1)')
-        .polygonStrokeColor(() => 'rgba(255, 50, 50, 0.95)') // Bold red borders
+        .polygonStrokeColor(() => 'rgba(255, 220, 120, 0.75)') // Soft gold borders
         .onPolygonClick(handlePolygonClick)
         .onPolygonHover(hoverPolygon);
 
@@ -138,9 +138,9 @@ function hoverPolygon(polygon) {
     });
     
     globe.polygonStrokeColor(d => {
-        if (state.askedCountries.includes(d.iso)) return 'rgba(255, 50, 50, 0.3)';
-        if (polygon === d) return '#FF9999';
-        return 'rgba(91, 231, 255, 0.5)';
+        if (state.askedCountries.includes(d.iso)) return 'rgba(255, 220, 120, 0.2)';
+        if (polygon === d) return 'rgba(255, 255, 255, 0.95)'; // bright white on hover
+        return 'rgba(255, 220, 120, 0.75)'; // same gold as default
     });
 }
 
@@ -412,7 +412,7 @@ function handleTimeout() {
 
 function resetGlobeColors() {
     globe.polygonCapColor(d => state.askedCountries.includes(d.iso) ? 'rgba(15, 23, 42, 0.7)' : 'rgba(0, 0, 0, 0.01)');
-    globe.polygonStrokeColor(d => state.askedCountries.includes(d.iso) ? 'rgba(255, 50, 50, 0.2)' : 'rgba(255, 50, 50, 0.95)');
+    globe.polygonStrokeColor(d => state.askedCountries.includes(d.iso) ? 'rgba(255, 220, 120, 0.2)' : 'rgba(255, 220, 120, 0.75)');
 }
 
 function endGame(msg) {
