@@ -56,13 +56,19 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 
 // API Routes
 
-// GET /api/:game/leaderboard - Get top 10 scores
+// GET /api/:game/leaderboard - Get top scores from the last 10 days
 app.get('/api/:game/leaderboard', async (req, res) => {
     const tableName = req.params.game === 'world' ? 'world_leaderboard' : 'leaderboard';
     try {
+        // Filter to last 10 days
+        const tenDaysAgo = new Date();
+        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+        const tenDaysAgoISO = tenDaysAgo.toISOString();
+
         let query = supabase
             .from(tableName)
-            .select('id, player_name, score, badge, city_count, timestamp');
+            .select('id, player_name, score, badge, city_count, timestamp')
+            .gte('timestamp', tenDaysAgoISO);
             
         if (req.query.cityCount && req.query.cityCount !== 'all') {
             const countParam = parseInt(req.query.cityCount);
