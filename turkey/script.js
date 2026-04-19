@@ -538,6 +538,16 @@ function showToast(message, type = 'success') {
 // --- Welcome Back Feature ---
 async function fetchWelcomeStats() {
     if (!state.playerToken) return;
+
+    // Show modal immediately with placeholder values
+    const storedName = localStorage.getItem('playerName') || '...';
+    document.getElementById('welcome-name').textContent = storedName;
+    document.getElementById('welcome-score').textContent = '-';
+    document.getElementById('welcome-badge').textContent = '...';
+    document.getElementById('welcome-rank').textContent = '...';
+    document.getElementById('welcome-modal').classList.remove('hidden');
+
+    // Silently update with real data when API responds
     try {
         const res = await fetch(`/api/turkey/players/${state.playerToken}/stats`);
         if (res.ok) {
@@ -550,7 +560,6 @@ async function fetchWelcomeStats() {
             } else {
                 document.getElementById('welcome-rank').textContent = "-";
             }
-            document.getElementById('welcome-modal').classList.remove('hidden');
         }
     } catch (e) {
         console.error("Error fetching welcome stats:", e);

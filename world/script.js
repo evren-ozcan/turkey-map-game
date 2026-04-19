@@ -149,6 +149,16 @@ initGlobe();
 // --- Personal Stats ---
 async function loadPersonalStats() {
     if (!state.playerToken) return;
+
+    // Show modal immediately with placeholder values, don't wait for network
+    const storedName = localStorage.getItem('playerName') || '...';
+    document.getElementById('welcome-name').textContent = storedName;
+    document.getElementById('welcome-score').textContent = '-';
+    document.getElementById('welcome-badge').textContent = '...';
+    document.getElementById('welcome-rank').textContent = '...';
+    welcomeModal.classList.remove('hidden');
+
+    // Silently update with real data when API responds
     try {
         const res = await fetch(`/api/world/players/${state.playerToken}/stats`);
         if (res.ok) {
@@ -157,12 +167,11 @@ async function loadPersonalStats() {
             document.getElementById('welcome-score').textContent = data.best_score;
             document.getElementById('welcome-badge').textContent = data.best_badge;
             document.getElementById('welcome-rank').textContent = `${data.rank}. Sıra (${data.mode} Ülke)`;
-            welcomeModal.classList.remove('hidden');
         }
     } catch (e) { console.error("Stats load err", e); }
 }
 
-window.addEventListener('load', loadPersonalStats);
+window.addEventListener('DOMContentLoaded', loadPersonalStats);
 
 // --- Leaderboard ---
 async function fetchLeaderboard() {
