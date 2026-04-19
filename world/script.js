@@ -14,7 +14,7 @@ let state = {
     askedCountries: [],
     targetCount: 5,
     playerToken: localStorage.getItem('playerToken') || null,
-    playerName: localStorage.getItem('playerName') || 'Gezgin',
+    playerName: localStorage.getItem('worldPlayerName') || 'Gezgin',
     currentMode: 'name',
     lastScoreId: null
 };
@@ -151,7 +151,7 @@ async function loadPersonalStats() {
     if (!state.playerToken) return;
 
     // Show modal immediately with placeholder values, don't wait for network
-    const storedName = localStorage.getItem('playerName') || '...';
+    const storedName = localStorage.getItem('worldPlayerName') || '...';
     document.getElementById('welcome-name').textContent = storedName;
     document.getElementById('welcome-score').textContent = '-';
     document.getElementById('welcome-badge').textContent = '...';
@@ -466,7 +466,7 @@ async function autoSubmitWorldScore() {
             }
             document.getElementById('recap-assigned-name').textContent = data.assigned_name;
             state.playerName = data.assigned_name;
-            localStorage.setItem('playerName', data.assigned_name);
+            localStorage.setItem('worldPlayerName', data.assigned_name);
         }
     } catch (e) {
         console.error("Score submit error", e);
@@ -487,7 +487,7 @@ async function updatePlayerName() {
             showToast("İsminiz güncellendi!", "success");
             document.getElementById('recap-assigned-name').textContent = newName;
             state.playerName = newName;
-            localStorage.setItem('playerName', newName);
+            localStorage.setItem('worldPlayerName', newName);
         } else {
             const data = await res.json();
             showToast(data.error || "Hata oluştu!", "error");

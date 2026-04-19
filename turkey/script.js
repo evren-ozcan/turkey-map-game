@@ -540,7 +540,7 @@ async function fetchWelcomeStats() {
     if (!state.playerToken) return;
 
     // Show modal immediately with placeholder values
-    const storedName = localStorage.getItem('playerName') || '...';
+    const storedName = localStorage.getItem('turkeyPlayerName') || '...';
     document.getElementById('welcome-name').textContent = storedName;
     document.getElementById('welcome-score').textContent = '-';
     document.getElementById('welcome-badge').textContent = '...';
@@ -553,6 +553,7 @@ async function fetchWelcomeStats() {
         if (res.ok) {
             const data = await res.json();
             document.getElementById('welcome-name').textContent = data.player_name;
+            localStorage.setItem('turkeyPlayerName', data.player_name); // Cache for next visit
             document.getElementById('welcome-score').textContent = data.best_score;
             document.getElementById('welcome-badge').textContent = data.best_badge;
             if (data.rank > 0) {
