@@ -107,11 +107,13 @@ app.post('/api/:game/scores', scoreLimiter, async (req, res) => {
     }
 
     // 1- BAKCEND SANITY CHECK (Mantık Kontrolü)
-    const MAX_SCORE_PER_CITY = 150;
+    const isWorld = req.params.game === 'world';
+    const MAX_SCORE_PER_CITY = isWorld ? 200 : 150;
+    const MAX_CITY_COUNT = isWorld ? 250 : 81;
     const MAX_POSSIBLE_SCORE = city_count * MAX_SCORE_PER_CITY;
     
-    if (score < 0 || score > MAX_POSSIBLE_SCORE || city_count <= 0 || city_count > 81) {
-        console.warn(`Hile tespit edildi: Puan = ${score}, Sınır = ${MAX_POSSIBLE_SCORE}`);
+    if (score < 0 || score > MAX_POSSIBLE_SCORE || city_count <= 0 || city_count > MAX_CITY_COUNT) {
+        console.warn(`Hile tespit edildi: Puan = ${score}, Sınır = ${MAX_POSSIBLE_SCORE}, Sehir/Ulke = ${city_count}`);
         return res.status(400).json({ error: 'Oyun puanınız mantıksal sınırların dışında!' });
     }
 
